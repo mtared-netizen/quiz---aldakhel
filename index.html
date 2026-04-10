@@ -981,6 +981,7 @@ function startGame(){
   const names=players.map(p=>p.trim()).filter(Boolean);
   if(names.length<2){toast('يجب إضافة مشاركَين على الأقل');return;}
   players=names;
+  persist();
   timerSecs=parseInt(document.getElementById('tRange').value);
   sessionScores={};awarded={};shuffledOptsCache={};
   players.forEach(p=>sessionScores[p]=0);
