@@ -1131,9 +1131,10 @@ function awardQ(p,pts,type,btn){
   broadcast({type:'scores',scores:getScoreData(),avatarsData:getAvatarData()});
 }
 function renderLiveScores(){
-  const sorted=[...players].sort((a,b)=>(sessionScores[b]||0)-(sessionScores[a]||0));
+  const sorted=[...players].sort((a,b)=>(sessionScores[a]||0)-(sessionScores[b]||0));
+  const last=sorted[sorted.length-1];
   document.getElementById('liveScores').innerHTML=sorted.map((p,i)=>`
-    <div class="srow ${i===0?'top1':''}">
+    <div class="srow ${p===last?'top1':''}">
       <span style="font-size:.7rem;color:var(--text3);width:14px;text-align:center">${i+1}</span>
       ${avHTML(p,26,'lav')}
       <span class="sname">${p}</span>
@@ -1226,9 +1227,10 @@ function renderDisplayScores(scoresObj, avData){
 function renderDsScores(scoresObj, avData){
   if(!scoresObj)return;
   if(avData) Object.assign(avatars, avData);
-  const sorted=Object.entries(scoresObj).sort((a,b)=>b[1]-a[1]);
+  const sorted=Object.entries(scoresObj).sort((a,b)=>a[1]-b[1]);
+  const last=sorted[sorted.length-1];
   document.getElementById('dsScores').innerHTML=sorted.map(([name,pts],i)=>`
-    <div class="ds-score-pill ${i===0?'top':''}">
+    <div class="ds-score-pill ${last&&name===last[0]?'top':''}">
       ${avHTML(name,30,'ds-sav')}
       <span class="ds-sname">${name}</span>
       <span class="ds-spts">${pts}</span>
