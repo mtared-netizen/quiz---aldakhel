@@ -203,6 +203,14 @@ body::before{content:'';position:fixed;inset:0;opacity:.35;pointer-events:none;z
 .ds-ans-icon{font-size:4rem;margin-bottom:.5rem}
 .ds-ans-lbl{font-size:1rem;color:var(--text2);margin-bottom:.5rem}
 .ds-ans-val{font-size:1.6rem;font-weight:700;color:var(--teal)}
+/* Wrong answer fullscreen overlay */
+#wrongOverlay{display:none;position:fixed;inset:0;z-index:9999;background:rgba(10,5,5,0.93);flex-direction:column;align-items:center;justify-content:center;text-align:center;animation:fadeIn .25s both}
+#wrongOverlay.show{display:flex}
+.wo-icon{font-size:6rem;animation:bnc .5s both}
+.wo-wrong-lbl{font-size:2rem;font-weight:800;color:var(--red);margin:.5rem 0;animation:fadeUp .4s .1s both}
+.wo-correct-lbl{font-size:1rem;color:var(--text2);margin-bottom:.6rem;animation:fadeUp .4s .2s both}
+.wo-correct-val{font-size:2.4rem;font-weight:800;color:var(--teal);animation:fadeUp .4s .3s both;line-height:1.3}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
 
 /* ============ RESULTS ============ */
 #sr{align-items:center;justify-content:center;padding:2rem;text-align:center;
@@ -520,6 +528,14 @@ body::before{content:'';position:fixed;inset:0;opacity:.35;pointer-events:none;z
       <div class="ds-scores" id="dsScores"></div>
     </div>
   </div>
+</div>
+
+<!-- Wrong answer fullscreen overlay -->
+<div id="wrongOverlay">
+  <div class="wo-icon">❌</div>
+  <div class="wo-wrong-lbl">إجابة خاطئة!</div>
+  <div class="wo-correct-lbl">الإجابة الصحيحة هي</div>
+  <div class="wo-correct-val" id="woCorrectVal"></div>
 </div>
 
 <!-- ===== RESULTS ===== -->
@@ -1121,17 +1137,25 @@ function renderDisplayQuestion(msg){
   if(msg.scores) renderDsScores(msg.scores,msg.avatarsData);
 }
 function renderDisplayReveal(msg){
-  // Keep options as-is — no coloring on the players screen
+  // Color options: correct = green, wrong = red
   if(msg.opts){
     const letters=['أ','ب','ج','د'];
-    document.getElementById('dsMcqGrid').innerHTML=msg.opts.map((opt,i)=>`
-      <div class="ds-opt"><span class="ds-optk">${letters[i]}</span>${opt}</div>`).join('');
+    document.getElementById('dsMcqGrid').innerHTML=msg.opts.map((opt,i)=>{
+      const isCorrect=opt===msg.ans;
+      return`<div class="ds-opt ${isCorrect?'correct':'wrong'}"><span class="ds-optk">${letters[i]}</span>${opt}</div>`;
+    }).join('');
   }
-  // Show correct answer text only
+  // Show correct answer text
   document.getElementById('dsAnsVal').textContent=msg.ans||'';
   document.getElementById('dsAnswered').style.display='block';
   clearInterval(dsTimerInt);
   if(msg.scores) renderDsScores(msg.scores,msg.avatarsData);
+
+  // Show fullscreen wrong overlay for 3 seconds
+  const ov=document.getElementById('wrongOverlay');
+  document.getElementById('woCorrectVal').textContent=msg.ans||'';
+  ov.classList.add('show');
+  setTimeout(()=>ov.classList.remove('show'),3000);
 }
 function renderDisplayScores(scoresObj, avData){
   if(avData) Object.assign(avatars, avData);
