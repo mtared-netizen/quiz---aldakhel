@@ -1090,6 +1090,7 @@ function revealAnswer(timedOut, isWrong){
   if(revealed)return;revealed=true;
   clearInterval(timerInt);
   const q=gameQs[curIdx].q;
+  const curPlayer=gameQs[curIdx].player;
   document.getElementById('anstxt').textContent=q.ans;
   document.getElementById('hinttxt').textContent=q.hint||'';
   document.getElementById('ansbox').classList.add('show');
@@ -1099,7 +1100,19 @@ function revealAnswer(timedOut, isWrong){
   if(timedOut||isWrong) SFX.timeout();
   else SFX.correct();
 
-  // Broadcast reveal
+  // إضافة النقاط تلقائياً لصاحب السؤال عند الإجابة الصحيحة
+  if(!timedOut && !isWrong && curPlayer){
+    const key=curPlayer+'_'+curIdx+'_f';
+    if(!awarded[key]){
+      sessionScores[curPlayer]=(sessionScores[curPlayer]||0)+q.pts;
+      scores[curPlayer]=(scores[curPlayer]||0)+q.pts;
+      awarded[key]=true;
+      persist();renderLiveScores();
+      SFX.award();
+    }
+  }
+
+  // Broadcast reveal مع الدرجات المحدّثة
   broadcast({
     type:'revealed',
     ans:q.ans,
@@ -1164,7 +1177,7 @@ function renderLiveScores(){
 }
 function skipQ(){clearInterval(timerInt);broadcast({type:'waiting',text:'⏳ السؤال التالي قريباً...'});nextQ();}
 function nextQ(){curIdx++;if(curIdx>=gameQs.length){endGame();return;}loadQ();}
-function endGame(){clearInterval(timerInt);gameActive=false;persist();broadcast({type:'ended'});SFX.end();nav('sr');renderResults();}
+function endGame(){clearInterval(timerInt);gameActive=false;persist();saveSessionResults(true);broadcast({type:'ended'});SFX.end();nav('sr');renderResults();}
 
 /* Score/avatar helpers for broadcast */
 function getScoreData(){
@@ -1303,7 +1316,7 @@ function renderResults(){
     }).join('');
 }
 
-function saveSessionResults(){
+function saveSessionResults(silent){
   const lb=getLB();
   const week=getWeekKey();
   const curMonth=getCurrentMonth();
@@ -1321,7 +1334,7 @@ function saveSessionResults(){
   }
   players.forEach(p=>{ if(avatars[p]) lb.avatars[p]=avatars[p]; });
   saveLB(lb);
-  toast('✓ تم حفظ نتائج الجلسة');
+  if(!silent) toast('✓ تم حفظ نتائج الجلسة');
   renderModePickerStats();
 }
 
