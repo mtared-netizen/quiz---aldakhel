@@ -1056,11 +1056,11 @@ function loadQ(){
 }
 
 function hostSelectOpt(btn,chosen,correct){
-  // Host can click to manually trigger reveal
-  revealAnswer();
+  const isWrong = chosen !== correct;
+  revealAnswer(false, isWrong);
 }
 
-function revealAnswer(timedOut){
+function revealAnswer(timedOut, isWrong){
   if(revealed)return;revealed=true;
   clearInterval(timerInt);
   const q=gameQs[curIdx].q;
@@ -1070,7 +1070,7 @@ function revealAnswer(timedOut){
   document.getElementById('nextbtn').style.display='block';
   renderPtsAward(q.pts);
   // صوت حسب الحالة
-  if(timedOut) SFX.timeout();
+  if(timedOut||isWrong) SFX.timeout();
   else SFX.correct();
 
   // Broadcast reveal
@@ -1079,7 +1079,7 @@ function revealAnswer(timedOut){
     ans:q.ans,
     hint:q.hint,
     opts:shuffledOptsCache[curIdx],
-    timedOut:!!timedOut,
+    showWrong:!!(timedOut||isWrong),
     scores:getScoreData(),
     avatarsData:getAvatarData(),
   });
@@ -1203,8 +1203,8 @@ function renderDisplayReveal(msg){
   clearInterval(dsTimerInt);
   if(msg.scores) renderDsScores(msg.scores,msg.avatarsData);
 
-  // Show wrong overlay only when time ran out (no correct answer given)
-  if(msg.timedOut){
+  // Show wrong overlay when time ran out or wrong answer selected
+  if(msg.showWrong){
     const ov=document.getElementById('wrongOverlay');
     document.getElementById('woCorrectVal').textContent=msg.ans||'';
     ov.classList.add('show');
