@@ -791,6 +791,52 @@ function loadData(){
 function getLB(){try{return JSON.parse(localStorage.getItem('mj4-lb')||'{}')}catch(e){return {}}}
 function saveLB(d){localStorage.setItem('mj4-lb',JSON.stringify(d));}
 
+/* ===================== AUDIO ===================== */
+const _ac=(()=>{try{return new(window.AudioContext||window.webkitAudioContext)();}catch(e){return null;}})();
+function _resumeAC(){if(_ac&&_ac.state==='suspended')_ac.resume();}
+function _playTone(def){
+  if(!_ac)return;
+  _resumeAC();
+  const now=_ac.currentTime;
+  def.forEach(([freq,start,dur,type='sine',vol=0.4])=>{
+    const o=_ac.createOscillator(),g=_ac.createGain();
+    o.type=type;o.frequency.setValueAtTime(freq,now+start);
+    g.gain.setValueAtTime(vol,now+start);
+    g.gain.exponentialRampToValueAtTime(0.001,now+start+dur);
+    o.connect(g);g.connect(_ac.destination);
+    o.start(now+start);o.stop(now+start+dur+0.05);
+  });
+}
+const SFX={
+  // سؤال جديد: نبضة لطيفة صاعدة
+  question:()=>_playTone([[440,0,.12,'sine',.25],[550,.1,.12,'sine',.2],[660,.2,.18,'sine',.18]]),
+  // إجابة صحيحة: فانفار قصير مبهج
+  correct:()=>_playTone([
+    [523,0,.1,'triangle',.4],[659,.1,.1,'triangle',.4],[784,.2,.1,'triangle',.4],
+    [1047,.3,.35,'triangle',.35],[784,.32,.08,'triangle',.2],[1047,.4,.4,'triangle',.3]
+  ]),
+  // إجابة خاطئة: نغمة هبوطية
+  wrong:()=>_playTone([
+    [300,0,.15,'sawtooth',.3],[220,.12,.2,'sawtooth',.25],[160,.28,.35,'sawtooth',.2]
+  ]),
+  // منح نقاط: نقرة خفيفة
+  award:()=>_playTone([[880,0,.08,'sine',.3],[1100,.07,.1,'sine',.25]]),
+  // انتهاء الوقت: صفارة تحذير
+  timeout:()=>_playTone([
+    [440,0,.08,'square',.25],[440,.1,.08,'square',.25],[440,.2,.08,'square',.25],[330,.32,.3,'square',.2]
+  ]),
+  // انتهاء اللعبة: موسيقى انتصار
+  end:()=>_playTone([
+    [523,0,.12,'triangle',.35],[659,.13,.12,'triangle',.35],[784,.26,.12,'triangle',.35],
+    [1047,.4,.5,'triangle',.4],[880,.42,.08,'triangle',.2],[1047,.52,.1,'triangle',.3],
+    [1175,.65,.6,'triangle',.35]
+  ]),
+  // عداد تنازلي أخير 5 ثوان
+  tick:()=>_playTone([[880,0,.06,'sine',.18]]),
+};
+// تفعيل السياق الصوتي عند أول تفاعل
+document.addEventListener('click',_resumeAC,{once:true});
+
 /* ===================== UTILS ===================== */
 function shuffle(a){return [...a].sort(()=>Math.random()-.5)}
 function initials(n){return(n||'').slice(0,2)||'؟'}
@@ -989,6 +1035,7 @@ function loadQ(){
   document.getElementById('rbadge').textContent='الجولة '+(Math.floor(curIdx/(players.length||1))+1);
   document.getElementById('qcntr').textContent=`السؤال ${curIdx+1} من ${gameQs.length}`;
   document.getElementById('pb').style.width=((curIdx/gameQs.length)*100)+'%';
+  SFX.question();
   startTimer();
 
   // Broadcast to display screen (no answer included)
@@ -1013,7 +1060,7 @@ function hostSelectOpt(btn,chosen,correct){
   revealAnswer();
 }
 
-function revealAnswer(){
+function revealAnswer(timedOut){
   if(revealed)return;revealed=true;
   clearInterval(timerInt);
   const q=gameQs[curIdx].q;
@@ -1022,6 +1069,9 @@ function revealAnswer(){
   document.getElementById('ansbox').classList.add('show');
   document.getElementById('nextbtn').style.display='block';
   renderPtsAward(q.pts);
+  // صوت حسب الحالة
+  if(timedOut) SFX.timeout();
+  else SFX.correct();
 
   // Broadcast reveal
   broadcast({
@@ -1040,7 +1090,8 @@ function startTimer(){
     timeLeft--;updateTimer();
     // Sync timer to display approx every 3s
     if(timeLeft%3===0) broadcast({type:'timer',timeLeft,timerSecs});
-    if(timeLeft<=0){clearInterval(timerInt);revealAnswer();}
+    if(timeLeft<=5&&timeLeft>0) SFX.tick();
+    if(timeLeft<=0){clearInterval(timerInt);revealAnswer(true);}
   },1000);
 }
 function updateTimer(){
@@ -1069,7 +1120,7 @@ function renderPtsAward(pts){
 function awardQ(p,pts,type,btn){
   const key=p+'_'+curIdx+'_'+type;
   if(awarded[key]){sessionScores[p]-=pts;scores[p]=Math.max(0,(scores[p]||0)-pts);awarded[key]=false;btn.classList.remove('awarded');}
-  else{sessionScores[p]=(sessionScores[p]||0)+pts;scores[p]=(scores[p]||0)+pts;awarded[key]=true;btn.classList.add('awarded');}
+  else{sessionScores[p]=(sessionScores[p]||0)+pts;scores[p]=(scores[p]||0)+pts;awarded[key]=true;btn.classList.add('awarded');SFX.award();}
   persist();renderLiveScores();
   broadcast({type:'scores',scores:getScoreData(),avatarsData:getAvatarData()});
 }
@@ -1085,7 +1136,7 @@ function renderLiveScores(){
 }
 function skipQ(){clearInterval(timerInt);broadcast({type:'waiting',text:'⏳ السؤال التالي قريباً...'});nextQ();}
 function nextQ(){curIdx++;if(curIdx>=gameQs.length){endGame();return;}loadQ();}
-function endGame(){clearInterval(timerInt);gameActive=false;persist();broadcast({type:'ended'});nav('sr');renderResults();}
+function endGame(){clearInterval(timerInt);gameActive=false;persist();broadcast({type:'ended'});SFX.end();nav('sr');renderResults();}
 
 /* Score/avatar helpers for broadcast */
 function getScoreData(){
@@ -1155,6 +1206,7 @@ function renderDisplayReveal(msg){
   const ov=document.getElementById('wrongOverlay');
   document.getElementById('woCorrectVal').textContent=msg.ans||'';
   ov.classList.add('show');
+  SFX.wrong();
   setTimeout(()=>ov.classList.remove('show'),3000);
 }
 function renderDisplayScores(scoresObj, avData){
