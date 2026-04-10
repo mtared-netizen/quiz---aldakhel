@@ -986,20 +986,25 @@ function startGame(){
   players.forEach(p=>sessionScores[p]=0);
   playerQPools={};
   const catIds=[...activeCats];
-  players.forEach(p=>{
-    playerQPools[p]={};
-    catIds.forEach(cid=>{ playerQPools[p][cid]=shuffle(ALL_Q.filter(q=>q.cat===cid)); });
-  });
+  // بناء بنك أسئلة مشترك مخلوط لكل فئة
+  const sharedPool={};
+  catIds.forEach(cid=>{ sharedPool[cid]=shuffle(ALL_Q.filter(q=>q.cat===cid)); });
+
+  // ترتيب اللاعبين بشكل دوري ثابت يبدأ عشوائياً
+  const rotatingPlayers=shuffle([...players]);
   gameQs=[];
+
+  // بناء جولات: كل جولة = سؤال لكل لاعب بالدور
+  // نبني جولتين لكل فئة
   catIds.forEach(cid=>{
     for(let r=0;r<2;r++){
-      shuffle([...players]).forEach(p=>{
-        const pool=playerQPools[p][cid];
+      // كل لاعب يحصل على سؤال في هذه الجولة بالترتيب الدوري
+      rotatingPlayers.forEach((p,i)=>{
+        const pool=sharedPool[cid];
         if(pool&&pool.length>0) gameQs.push({q:pool.shift(),player:p});
       });
     }
   });
-  gameQs=shuffle(gameQs);
   if(!gameQs.length){toast('لا توجد أسئلة بهذا الاختيار');return;}
   curIdx=0;gameActive=true;
   nav('sg');renderLiveScores();loadQ();
