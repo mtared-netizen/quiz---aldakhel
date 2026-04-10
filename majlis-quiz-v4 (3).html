@@ -1003,7 +1003,7 @@ function startGame(){
   players=names;
   persist();
   timerSecs=parseInt(document.getElementById('tRange').value);
-  sessionScores={};awarded={};shuffledOptsCache={};
+  sessionScores={};awarded={};shuffledOptsCache={};_sessionSaved=false;
   players.forEach(p=>sessionScores[p]=0);
   playerQPools={};
   const catIds=[...activeCats];
@@ -1316,7 +1316,10 @@ function renderResults(){
     }).join('');
 }
 
+let _sessionSaved=false;
 function saveSessionResults(silent){
+  if(_sessionSaved && silent) return; // منع التكرار عند الحفظ التلقائي
+  _sessionSaved=true;
   const lb=getLB();
   const week=getWeekKey();
   const curMonth=getCurrentMonth();
@@ -1336,6 +1339,7 @@ function saveSessionResults(silent){
   saveLB(lb);
   if(!silent) toast('✓ تم حفظ نتائج الجلسة');
   renderModePickerStats();
+  renderLB();
 }
 
 /* ===================== MONTH SYSTEM ===================== */
