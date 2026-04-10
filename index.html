@@ -101,6 +101,22 @@ body::before{content:'';position:fixed;inset:0;opacity:.35;pointer-events:none;z
 .pqhdr{background:var(--purple-dim);border:.5px solid rgba(124,107,255,.3);border-radius:var(--rs);padding:8px 14px;display:flex;align-items:center;gap:10px}
 .pqlbl{font-size:.75rem;color:#a59bff;font-weight:700}
 .pqname{font-size:.95rem;font-weight:700;color:var(--text)}
+/* Special event cards */
+.special-card{border-radius:20px;padding:2rem 1.5rem;text-align:center;position:relative;overflow:hidden;animation:bnc .5s both}
+.special-card.good{background:var(--teal-dim);border:2px solid var(--teal)}
+.special-card.bad{background:var(--red-dim);border:2px solid var(--red)}
+.special-icon{font-size:4rem;margin-bottom:.8rem}
+.special-title{font-size:2rem;font-weight:800;margin-bottom:.5rem}
+.special-card.good .special-title{color:var(--teal)}
+.special-card.bad .special-title{color:var(--red)}
+.special-desc{font-size:.9rem;color:var(--text2);margin-bottom:1.2rem;line-height:1.6}
+.special-pts-grid{display:flex;flex-direction:column;gap:8px;margin-top:.8rem}
+.special-pts-row{display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.05);border-radius:8px;padding:8px 14px}
+.special-pts-name{font-size:.9rem;font-weight:600}
+.special-pts-val{font-size:1rem;font-weight:800}
+.special-pts-val.pos{color:var(--teal)}
+.special-pts-val.neg{color:var(--red)}
+.special-pts-val.zero{color:var(--text3)}
 /* Host question card — shows answer */
 .hqcard{background:var(--surface);border:.5px solid var(--border2);border-radius:20px;padding:1.5rem;position:relative;overflow:hidden}
 .hqcard::before{content:'';position:absolute;top:-30px;right:-30px;width:140px;height:140px;border-radius:50%;background:var(--gold-dim);pointer-events:none}
@@ -208,6 +224,15 @@ body::before{content:'';position:fixed;inset:0;opacity:.35;pointer-events:none;z
 .ds-sinit{width:30px;height:30px;border-radius:50%;background:var(--surface2);border:.5px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:.62rem;font-weight:700;color:var(--text2);flex-shrink:0}
 .ds-sname{font-size:.85rem;font-weight:500}
 .ds-spts{font-size:.85rem;font-weight:700;color:var(--gold);margin-right:4px}
+/* Display screen special event */
+.ds-special{text-align:center;padding:2rem 1rem;animation:bnc .5s both;border-radius:20px}
+.ds-special.good{background:var(--teal-dim);border:2px solid var(--teal)}
+.ds-special.bad{background:var(--red-dim);border:2px solid var(--red)}
+.ds-special-icon{font-size:5rem;margin-bottom:.6rem}
+.ds-special-title{font-size:2.5rem;font-weight:800;margin-bottom:.5rem}
+.ds-special.good .ds-special-title{color:var(--teal)}
+.ds-special.bad .ds-special-title{color:var(--red)}
+.ds-special-sub{font-size:1rem;color:var(--text2);line-height:1.6}
 /* Answered overlay */
 .ds-answered{text-align:center;padding:2rem;animation:bnc .5s both}
 .ds-ans-icon{font-size:4rem;margin-bottom:.5rem}
@@ -759,6 +784,7 @@ function handleMsg(msg, direct){
   if(msg.type==='question') renderDisplayQuestion(msg);
   if(msg.type==='revealed') renderDisplayReveal(msg);
   if(msg.type==='scores') renderDisplayScores(msg.scores,msg.avatarsData);
+  if(msg.type==='special') renderDisplaySpecial(msg);
   if(msg.type==='waiting'){ showDsWaiting(msg.text||'⏳ بانتظار السؤال التالي...'); }
   if(msg.type==='ended'){ showDsWaiting('🏆 انتهت المسابقة! شاهد النتائج على شاشة المضيف'); }
 }
@@ -1000,22 +1026,126 @@ function startGame(){
   gameQs=[];
 
   // كل متسابق يحصل على سؤال واحد من كل فئة بالترتيب الدوري
-  // الترتيب: فئة١-لاعب١، فئة١-لاعب٢، ... فئة٢-لاعب١، فئة٢-لاعب٢، ...
   catIds.forEach(cid=>{
     rotatingPlayers.forEach(p=>{
       const pool=sharedPool[cid];
       if(pool&&pool.length>0) gameQs.push({q:pool.shift(),player:p});
     });
   });
+
+  // إضافة بطاقة "الجار الصالح" و"جار السوء" عشوائياً لمتسابق واحد لكل منهما
+  // تُدرج في موضع عشوائي بين الأسئلة (ليس في البداية ولا النهاية)
+  if(rotatingPlayers.length>=2 && gameQs.length>=2){
+    const insertSpecial=(type)=>{
+      const p=rotatingPlayers[Math.floor(Math.random()*rotatingPlayers.length)];
+      const pos=1+Math.floor(Math.random()*(gameQs.length-1));
+      gameQs.splice(pos,0,{special:type,player:p});
+    };
+    insertSpecial('good_neighbor');
+    insertSpecial('bad_neighbor');
+  }
   if(!gameQs.length){toast('لا توجد أسئلة بهذا الاختيار');return;}
   curIdx=0;gameActive=true;
   nav('sg');renderLiveScores();loadQ();
 }
 
+function getNeighbors(playerName){
+  // إيجاد الجار السابق والتالي حسب ترتيب اللاعبين
+  const idx=players.indexOf(playerName);
+  const prev=players[(idx-1+players.length)%players.length];
+  const next=players[(idx+1)%players.length];
+  return{prev,next};
+}
+
+function loadSpecial(entry){
+  revealed=true;
+  clearInterval(timerInt);
+  const{special,player}=entry;
+  const isGood=special==='good_neighbor';
+  const{prev,next}=getNeighbors(player);
+
+  // تطبيق النقاط تلقائياً
+  if(isGood){
+    sessionScores[player]=(sessionScores[player]||0)+10;scores[player]=(scores[player]||0)+10;
+    if(prev!==player){sessionScores[prev]=(sessionScores[prev]||0)+5;scores[prev]=(scores[prev]||0)+5;}
+    if(next!==player&&next!==prev){sessionScores[next]=(sessionScores[next]||0)+5;scores[next]=(scores[next]||0)+5;}
+  } else {
+    // جار السوء: صاحبه لا يخسر شيئاً — الجيران يخسرون
+    if(prev!==player){sessionScores[prev]=Math.max(0,(sessionScores[prev]||0)-5);scores[prev]=Math.max(0,(scores[prev]||0)-5);}
+    if(next!==player&&next!==prev){sessionScores[next]=Math.max(0,(sessionScores[next]||0)-5);scores[next]=Math.max(0,(scores[next]||0)-5);}
+  }
+  persist();renderLiveScores();renderLB();
+
+  // عرض البطاقة الخاصة في شاشة المضيف
+  const icon=isGood?'🤝':'😈';
+  const title=isGood?'الجار الصالح':'جار السوء';
+  const cls=isGood?'good':'bad';
+  const ptsRows=[
+    {name:prev, val:isGood?'+5':'-5', cls:isGood?'pos':'neg', lbl:'الجار السابق'},
+    {name:player, val:isGood?'+10':'0', cls:isGood?'pos':'zero', lbl:'صاحب البطاقة'},
+    {name:next!==prev?next:null, val:isGood?'+5':'-5', cls:isGood?'pos':'neg', lbl:'الجار التالي'},
+  ].filter(r=>r.name);
+
+  document.getElementById('catpill').innerHTML=icon+' حدث خاص';
+  const ph=document.getElementById('pqhdr');ph.style.display='flex';
+  document.getElementById('pqav').innerHTML=avHTML(player,26,'pqav');
+  document.getElementById('pqname').textContent=player;
+  document.getElementById('qnum').textContent=`السؤال ${curIdx+1} من ${gameQs.length}`;
+  document.getElementById('qflag').style.display='none';
+  document.getElementById('qtxt').textContent='';
+  document.getElementById('hostAnsAlways').textContent='';
+  document.getElementById('mcqgrid').innerHTML='';
+  document.getElementById('ansbox').classList.remove('show');
+  document.getElementById('ptsaward').style.display='none';
+
+  // استبدال محتوى بطاقة السؤال ببطاقة خاصة
+  document.querySelector('.hqcard').innerHTML=`
+    <div class="special-card ${cls}">
+      <div class="special-icon">${icon}</div>
+      <div class="special-title">${title}</div>
+      <div class="special-desc">${isGood?'حظ سعيد! وُزِّعت النقاط على صاحب البطاقة وجيرانه':'للأسف! خسر الجيران نقاطاً'}</div>
+      <div class="special-pts-grid">
+        ${ptsRows.map(r=>`<div class="special-pts-row">${avHTML(r.name,28,'ptsmav')}<span class="special-pts-name">${r.name} <span style="font-size:.7rem;color:var(--text3)">${r.lbl}</span></span><span class="special-pts-val ${r.cls}">${r.val} نقطة</span></div>`).join('')}
+      </div>
+    </div>`;
+
+  document.getElementById('rbadge').textContent='الجولة '+(Math.floor(curIdx/(players.length||1))+1);
+  document.getElementById('qcntr').textContent=`السؤال ${curIdx+1} من ${gameQs.length}`;
+  document.getElementById('pb').style.width=((curIdx/gameQs.length)*100)+'%';
+  document.getElementById('nextbtn').style.display='block';
+  SFX[isGood?'correct':'wrong']();
+
+  // بث إلى شاشة العرض
+  broadcast({
+    type:'special',
+    special,
+    player,
+    prev,
+    next:next!==prev?next:null,
+    isGood,
+    scores:getScoreData(),
+    avatarsData:getAvatarData(),
+  });
+}
+
 function loadQ(){
   const entry=gameQs[curIdx];
+
+  // بطاقة خاصة؟
+  if(entry.special){ loadSpecial(entry); return; }
+
   const q=entry.q, player=entry.player;
   revealed=false;
+
+  // استعادة شكل بطاقة السؤال الأصلي إن تغيّر
+  const hqcard=document.querySelector('.hqcard');
+  hqcard.innerHTML=`
+    <div class="qnum" id="qnum"></div>
+    <div id="qflag" class="qflag" style="display:none"></div>
+    <div class="qtxt" id="qtxt"></div>
+    <div class="ans-always"><span class="ans-lbl">✓ الإجابة</span><span class="ans-val" id="hostAnsAlways"></span></div>
+    <div class="mcqgrid" id="mcqgrid"></div>`;
+
   // Pre-shuffle and cache options for this question (so display matches host)
   if(!shuffledOptsCache[curIdx]) shuffledOptsCache[curIdx]=shuffle([...q.opts]);
   const shuffledOpts=shuffledOptsCache[curIdx];
@@ -1179,6 +1309,15 @@ function renderDisplayQuestion(msg){
   document.getElementById('dsWaiting').style.display='none';
   document.getElementById('dsGame').style.display='flex';
 
+  // إعادة بناء بطاقة السؤال إذا تغيّرت (بعد بطاقة خاصة)
+  const qcard=document.querySelector('.ds-qcard');
+  if(!document.getElementById('dsQnum')){
+    qcard.innerHTML=`
+      <div class="ds-qnum" id="dsQnum"></div>
+      <div id="dsFlagEl" class="ds-flag" style="display:none"></div>
+      <div class="ds-qtxt" id="dsQtxt"></div>`;
+  }
+
   // merge avatars from msg
   if(msg.avatarsData) Object.assign(avatars, msg.avatarsData);
 
@@ -1211,6 +1350,45 @@ function renderDisplayQuestion(msg){
 
   // Timer
   if(msg.timerSecs) startDsTimer(msg.timerSecs,msg.timerSecs);
+  if(msg.scores) renderDsScores(msg.scores,msg.avatarsData);
+}
+function renderDisplaySpecial(msg){
+  document.getElementById('dsWaiting').style.display='none';
+  document.getElementById('dsGame').style.display='flex';
+  clearInterval(dsTimerInt);
+  if(msg.avatarsData) Object.assign(avatars,msg.avatarsData);
+
+  const icon=msg.isGood?'🤝':'😈';
+  const title=msg.isGood?'الجار الصالح':'جار السوء';
+  const cls=msg.isGood?'good':'bad';
+
+  // أخفِ عناصر السؤال وأظهر البطاقة الخاصة
+  document.getElementById('dsPlayerPanel').classList.add('show');
+  const av=avatars[msg.player];
+  document.getElementById('dsPlayerBigAv').innerHTML=av
+    ?`<img src="${av}" class="ds-player-big-av">`
+    :`<div class="ds-player-big-init">${(msg.player||'').slice(0,2)||'؟'}</div>`;
+  document.getElementById('dsPlayerBigName').textContent=msg.player;
+
+  document.getElementById('dsMcqGrid').innerHTML='';
+  document.getElementById('dsAnswered').style.display='none';
+  document.getElementById('dsQtxt').textContent='';
+  document.getElementById('dsFlagEl').style.display='none';
+  document.getElementById('dsQnum').textContent='';
+
+  document.querySelector('.ds-qcard').innerHTML=`
+    <div class="ds-special ${cls}">
+      <div class="ds-special-icon">${icon}</div>
+      <div class="ds-special-title">${title}</div>
+      <div class="ds-special-sub">
+        ${msg.isGood
+          ?`${msg.player} يحصل على <b style="color:var(--teal)">+١٠</b> نقطة<br>${[msg.prev,msg.next].filter(Boolean).join(' و')} يحصلان على <b style="color:var(--teal)">+٥</b> نقطة لكل منهما`
+          :`${[msg.prev,msg.next].filter(Boolean).join(' و')} يخسران <b style="color:var(--red)">٥</b> نقاط لكل منهما`
+        }
+      </div>
+    </div>`;
+
+  SFX[msg.isGood?'correct':'wrong']();
   if(msg.scores) renderDsScores(msg.scores,msg.avatarsData);
 }
 function renderDisplayReveal(msg){
