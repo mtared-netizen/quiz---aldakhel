@@ -1107,7 +1107,7 @@ function revealAnswer(timedOut, isWrong){
       sessionScores[curPlayer]=(sessionScores[curPlayer]||0)+q.pts;
       scores[curPlayer]=(scores[curPlayer]||0)+q.pts;
       awarded[key]=true;
-      persist();renderLiveScores();
+      persist();renderLiveScores();renderLB();
       SFX.award();
     }
   }
@@ -1161,7 +1161,7 @@ function awardQ(p,pts,type,btn){
   const key=p+'_'+curIdx+'_'+type;
   if(awarded[key]){sessionScores[p]-=pts;scores[p]=Math.max(0,(scores[p]||0)-pts);awarded[key]=false;btn.classList.remove('awarded');}
   else{sessionScores[p]=(sessionScores[p]||0)+pts;scores[p]=(scores[p]||0)+pts;awarded[key]=true;btn.classList.add('awarded');SFX.award();}
-  persist();renderLiveScores();
+  persist();renderLiveScores();renderLB();
   broadcast({type:'scores',scores:getScoreData(),avatarsData:getAvatarData()});
 }
 function renderLiveScores(){
@@ -1381,14 +1381,19 @@ function renderLB(){
   const lb=getLB();
   const curMonth=getCurrentMonth();
   const monthData=lb.months?.[curMonth]||{};
-  const allPlayers=new Set([...Object.keys(monthData),...players.filter(p=>p.trim())]);
+  // دمج نقاط الجلسة الحالية مع المحفوظة للعرض الحي
+  const liveData={...monthData};
+  if(gameActive){
+    players.forEach(p=>{ liveData[p]=(monthData[p]||0)+(sessionScores[p]||0); });
+  }
+  const allPlayers=new Set([...Object.keys(liveData),...players.filter(p=>p.trim())]);
   const weekCount=(lb.weeklyWinners||[]).filter(w=>w.month===curMonth).length;
   document.getElementById('lbMonthInfo').innerHTML=`<span style="font-weight:700;color:var(--gold)">${getMonthName(curMonth)}</span> — ${weekCount} جلسة مسجّلة حتى الآن`;
   const el=document.getElementById('lbList');
   if(!allPlayers.size){
     el.innerHTML=`<div style="text-align:center;color:var(--text2);padding:2rem">لا توجد نتائج لهذا الشهر بعد</div>`;
   } else {
-    const sorted=[...allPlayers].map(p=>({p,pts:monthData[p]||0})).sort((a,b)=>b.pts-a.pts);
+    const sorted=[...allPlayers].map(p=>({p,pts:liveData[p]||0})).sort((a,b)=>b.pts-a.pts);
     el.innerHTML=sorted.map(({p,pts},i)=>{
       const av=lb.avatars?.[p]||avatars[p];
       const avEl=av?`<img src="${av}" class="lbav">`:`<div class="lbinit">${initials(p)}</div>`;
