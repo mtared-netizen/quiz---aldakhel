@@ -1079,6 +1079,7 @@ function revealAnswer(timedOut){
     ans:q.ans,
     hint:q.hint,
     opts:shuffledOptsCache[curIdx],
+    timedOut:!!timedOut,
     scores:getScoreData(),
     avatarsData:getAvatarData(),
   });
@@ -1202,12 +1203,16 @@ function renderDisplayReveal(msg){
   clearInterval(dsTimerInt);
   if(msg.scores) renderDsScores(msg.scores,msg.avatarsData);
 
-  // Show fullscreen wrong overlay for 3 seconds
-  const ov=document.getElementById('wrongOverlay');
-  document.getElementById('woCorrectVal').textContent=msg.ans||'';
-  ov.classList.add('show');
-  SFX.wrong();
-  setTimeout(()=>ov.classList.remove('show'),3000);
+  // Show wrong overlay only when time ran out (no correct answer given)
+  if(msg.timedOut){
+    const ov=document.getElementById('wrongOverlay');
+    document.getElementById('woCorrectVal').textContent=msg.ans||'';
+    ov.classList.add('show');
+    SFX.wrong();
+    setTimeout(()=>ov.classList.remove('show'),3000);
+  } else {
+    SFX.correct();
+  }
 }
 function renderDisplayScores(scoresObj, avData){
   if(avData) Object.assign(avatars, avData);
