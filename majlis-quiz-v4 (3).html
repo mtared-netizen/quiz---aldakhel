@@ -766,15 +766,12 @@ function broadcast(msg){
   try{ if(bc) bc.postMessage(msg); } catch(e){}
   // Also write to localStorage so it persists briefly for late-joining tabs
   try{ localStorage.setItem('mj4-sync',JSON.stringify({...msg,_ts:Date.now()})); } catch(e){}
-  // إذا كانت شاشة العرض مفتوحة في نفس التاب — نحدثها مباشرة
-  if(!isHost) handleMsg(msg);
-  else {
-    const ds=document.getElementById('displayScreen');
-    if(ds && ds.classList.contains('active')) handleMsg(msg);
-  }
+  // إذا كانت شاشة العرض مفتوحة في نفس التاب — نحدثها مباشرة (تجاوز فحص isHost)
+  const ds=document.getElementById('displayScreen');
+  if(ds && ds.classList.contains('active')) handleMsg(msg, true);
 }
-function handleMsg(msg){
-  if(isHost) return; // host ignores own messages
+function handleMsg(msg, direct){
+  if(isHost && !direct) return; // host ignores BroadcastChannel messages only
   if(msg.type==='question') renderDisplayQuestion(msg);
   if(msg.type==='revealed') renderDisplayReveal(msg);
   if(msg.type==='scores') renderDisplayScores(msg.scores,msg.avatarsData);
