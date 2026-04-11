@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>مجلس الدخيل</title>
+<title>مجلس الدخيللا</title>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=Scheherazade+New:wght@400;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -121,7 +121,7 @@ body::before{content:'';position:fixed;inset:0;opacity:.35;pointer-events:none;z
 .hqcard{background:var(--surface);border:.5px solid var(--border2);border-radius:20px;padding:1.5rem;position:relative;overflow:hidden}
 .hqcard::before{content:'';position:absolute;top:-30px;right:-30px;width:140px;height:140px;border-radius:50%;background:var(--gold-dim);pointer-events:none}
 .qnum{font-size:.78rem;color:var(--text3);margin-bottom:.7rem}
-.qflag{text-align:center;margin-bottom:.7rem}.qflag img{width:200px;max-width:70%;border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,.4)}
+.qflag{font-size:4.5rem;text-align:center;margin-bottom:.7rem}
 .qtxt{font-size:clamp(.95rem,2vw,1.25rem);font-weight:500;line-height:1.7;color:var(--text);margin-bottom:.8rem}
 /* MCQ in HOST — shows correct highlighted */
 .mcqgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:.8rem}
@@ -204,7 +204,7 @@ body::before{content:'';position:fixed;inset:0;opacity:.35;pointer-events:none;z
 .ds-qcard{background:var(--surface);border:.5px solid var(--border2);border-radius:24px;padding:2.5rem;position:relative;overflow:hidden;margin-bottom:1.5rem;animation:fadeUp .4s both}
 .ds-qcard::before{content:'';position:absolute;top:-50px;right:-50px;width:200px;height:200px;border-radius:50%;background:var(--gold-dim);pointer-events:none}
 .ds-qnum{font-size:.82rem;color:var(--text3);margin-bottom:1rem}
-.ds-flag{text-align:center;margin-bottom:1rem}.ds-flag img{width:280px;max-width:80%;border-radius:10px;box-shadow:0 6px 24px rgba(0,0,0,.5)}
+.ds-flag{font-size:6rem;text-align:center;margin-bottom:1rem}
 .ds-qtxt{font-size:clamp(1.2rem,3vw,1.8rem);font-weight:500;line-height:1.65;color:var(--text)}
 /* MCQ for players — big and clear */
 .ds-mcqgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
@@ -701,47 +701,47 @@ Q(58,'flags','ما اسم هذه الدولة؟',['بنغلاديش','الجزا
 Q(59,'flags','ما اسم هذه الدولة؟',['بلجيكا','المجر','إيطاليا','المكسيك'],'إيطاليا','أخضر أبيض أحمر رأسياً',5,'it'),
 Q(60,'flags','ما اسم هذه الدولة؟',['أستراليا','نيوزيلندا','المملكة المتحدة','كندا'],'المملكة المتحدة','Union Jack',5,'gb'),
 /* ===== صور المشاهير ===== */
-Q(61,'celebs','من هذا الشخص الشهير؟',['بيل غيتس','ستيف جوبز','إيلون ماسك','مارك زوكربيرغ'],'ستيف جوبز','مؤسس شركة آبل',5,'https://upload.wikimedia.org/wikipedia/commons/thumb/d/dc/Steve_Jobs_Headshot_2010-CROP_%28cropped_2%29.jpg/240px-Steve_Jobs_Headshot_2010-CROP_%28cropped_2%29.jpg'),
-Q(62,'celebs','من هذا الشخص الشهير؟',['جيف بيزوس','بيل غيتس','إيلون ماسك','مارك زوكربيرغ'],'إيلون ماسك','مالك تيسلا وسبيس إكس',5,'https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/Elon_Musk_Royal_Society_%28cropped%29.jpg/240px-Elon_Musk_Royal_Society_%28cropped%29.jpg'),
-Q(63,'celebs','من هذا الشخص الشهير؟',['ستيف جوبز','إيلون ماسك','مارك زوكربيرغ','جيف بيزوس'],'مارك زوكربيرغ','مؤسس فيسبوك',5,'https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Mark_Zuckerberg_F8_2019_Keynote_%2832830578717%29_%28cropped%29.jpg/240px-Mark_Zuckerberg_F8_2019_Keynote_%2832830578717%29_%28cropped%29.jpg'),
-Q(64,'celebs','من هذا الشخص الشهير؟',['إيلون ماسك','بيل غيتس','مارك زوكربيرغ','جيف بيزوس'],'جيف بيزوس','مؤسس أمازون',5,'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Jeff_Bezos_at_Amazon_Spheres_Grand_Opening_in_Seattle_-_2018_%2839074799225%29_%28cropped%29.jpg/240px-Jeff_Bezos_at_Amazon_Spheres_Grand_Opening_in_Seattle_-_2018_%2839074799225%29_%28cropped%29.jpg'),
-Q(65,'celebs','من هذا العالم الشهير؟',['نيوتن','إديسون','أينشتاين','هوكينغ'],'أينشتاين','نظرية النسبية',5,'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Albert_Einstein_Head.jpg/240px-Albert_Einstein_Head.jpg'),
-Q(66,'celebs','من هذا الشخص الشهير؟',['الملك عبدالله','الملك فهد','الملك سلمان','الملك خالد'],'الملك سلمان','خادم الحرمين الشريفين',5,'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/King_Salman_of_Saudi_Arabia.jpg/240px-King_Salman_of_Saudi_Arabia.jpg'),
-Q(67,'celebs','من هذا القائد التاريخي؟',['أبراهام لينكولن','توماس جيفرسون','جورج واشنطن','بنجامين فرانكلين'],'جورج واشنطن','أول رئيس أمريكي',5,'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Gilbert_Stuart_Williamstown_Portrait_of_George_Washington.jpg/240px-Gilbert_Stuart_Williamstown_Portrait_of_George_Washington.jpg'),
-Q(68,'celebs','من هذا المخترع الشهير؟',['توماس إديسون','ألكسندر غراهام بيل','نيكولا تيسلا','غيوم مارسوني'],'ألكسندر غراهام بيل','مخترع الهاتف',5,'https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/Alexander_Graham_Bell.jpg/240px-Alexander_Graham_Bell.jpg'),
-Q(69,'celebs','من هذا الفنان الشهير؟',['مايكل أنجلو','رافائيل','فان غوخ','ليوناردو دافنشي'],'ليوناردو دافنشي','رسم الموناليزا',5,'https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Leonardo_self.jpg/240px-Leonardo_self.jpg'),
-Q(70,'celebs','من هذا الشخص الشهير؟',['ستيف جوبز','بيل غيتس','جيف بيزوس','لاري بيج'],'بيل غيتس','مؤسس مايكروسوفت',5,'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/Bill_Gates_2017_%28cropped%29.jpg/240px-Bill_Gates_2017_%28cropped%29.jpg'),
-Q(71,'celebs','من هذا المخترع الشهير؟',['نيوتن','تيسلا','ألكسندر بيل','توماس إديسون'],'توماس إديسون','ألف اختراع وأكثر',5,'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Thomas_Edison2.jpg/240px-Thomas_Edison2.jpg'),
-Q(72,'celebs','من هذا الرائد الفضائي؟',['باز ألدرين','نيل آرمسترونغ','يوري غاغارين','جون غلين'],'نيل آرمسترونغ','أول إنسان على القمر',5,'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Neil_Armstrong_pose.jpg/240px-Neil_Armstrong_pose.jpg'),
-Q(73,'celebs','من هذا الشخص الشهير؟',['دزسمود توتو','أوليفر تامبو','نيلسون مانديلا','والتر سيسولو'],'نيلسون مانديلا','٢٧ سنة في السجن',5,'https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Nelson_Mandela-2008_%28edit%29.jpg/240px-Nelson_Mandela-2008_%28edit%29.jpg'),
-Q(74,'celebs','من هذا العالم التاريخي؟',['غاليليو','أينشتاين','إسحاق نيوتن','ستيفن هوكينغ'],'إسحاق نيوتن','قصة التفاحة',5,'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Portrait_of_Sir_Isaac_Newton%2C_1689.jpg/240px-Portrait_of_Sir_Isaac_Newton%2C_1689.jpg'),
-Q(75,'celebs','من هذا الموسيقار الشهير؟',['موزارت','شوبان','باخ','بيتهوفن'],'بيتهوفن','سيمفونية رقم ٩',10,'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Beethoven.jpg/240px-Beethoven.jpg'),
-Q(76,'celebs','من هذا اللاعب الأسطوري؟',['رونالدو','روني','بيليه','رونالدينيو'],'بيليه','أسطورة كرة القدم البرازيلية',5,'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/Pele_portrait.jpg/240px-Pele_portrait.jpg'),
-Q(77,'celebs','من هذا الشخص الشهير؟',['ستيف جوبز','ماركوس زوكربيرغ','أندي غروف','لاري بيج'],'ستيف جوبز','Think Different',5,'https://upload.wikimedia.org/wikipedia/commons/thumb/d/dc/Steve_Jobs_Headshot_2010-CROP_%28cropped_2%29.jpg/240px-Steve_Jobs_Headshot_2010-CROP_%28cropped_2%29.jpg'),
-Q(78,'celebs','من هذا الرئيس الأمريكي؟',['جورج بوش','باراك أوباما','بيل كلينتون','جيمي كارتر'],'باراك أوباما','أول رئيس أمريكي أسود',5,'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/President_Barack_Obama.jpg/240px-President_Barack_Obama.jpg'),
-Q(79,'celebs','من هذا الفيلسوف والعالم؟',['أرسطو','أفلاطون','سقراط','ابن رشد'],'أرسطو','أستاذ الإسكندر الأكبر',5,'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ae/Aristotle_Altemps_Inv8575.jpg/240px-Aristotle_Altemps_Inv8575.jpg'),
-Q(80,'celebs','من هذا القائد التاريخي؟',['يوليوس قيصر','الإسكندر الأكبر','نابليون بونابرت','تشرشل'],'نابليون بونابرت','قائد الحملة الفرنسية',5,'https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Jacques-Louis_David_-_The_Emperor_Napoleon_in_His_Study_at_the_Tuileries_-_Google_Art_Project.jpg/240px-Jacques-Louis_David_-_The_Emperor_Napoleon_in_His_Study_at_the_Tuileries_-_Google_Art_Project.jpg'),
+Q(61,'celebs','من هو مؤسس شركة آبل؟',['بيل غيتس','ستيف جوبز','إيلون ماسك','مارك زوكربيرغ'],'ستيف جوبز','Think Different',5),
+Q(62,'celebs','من هو أغنى شخص في العالم (2024)؟',['جيف بيزوس','بيل غيتس','إيلون ماسك','مارك زوكربيرغ'],'إيلون ماسك','مالك تسلا وسبيس إكس',5),
+Q(63,'celebs','من هو مؤسس فيسبوك؟',['ستيف جوبز','إيلون ماسك','مارك زوكربيرغ','جيف بيزوس'],'مارك زوكربيرغ','أسسه في هارفارد',5),
+Q(64,'celebs','من هو الملك الراحل مؤسس المملكة العربية السعودية؟',['الملك فهد','الملك خالد','الملك عبدالعزيز','الملك سعود'],'الملك عبدالعزيز','طيب الله ثراه',5),
+Q(65,'celebs','من هو مؤسس شركة أمازون؟',['إيلون ماسك','بيل غيتس','مارك زوكربيرغ','جيف بيزوس'],'جيف بيزوس','أكبر متجر إلكتروني',5),
+Q(66,'celebs','من هو أشهر عالم فيزياء في التاريخ؟',['نيوتن','إديسون','أينشتاين','هوكينغ'],'أينشتاين','نظرية النسبية',5),
+Q(67,'celebs','ما اسم ملك المملكة العربية السعودية الحالي؟',['الملك عبدالله','الملك محمد بن سلمان','الملك سلمان','الملك فهد'],'الملك سلمان','خادم الحرمين الشريفين',5),
+Q(68,'celebs','من هو ولي عهد المملكة العربية السعودية؟',['الأمير محمد بن نايف','الأمير خالد','الأمير محمد بن سلمان','الأمير عبدالعزيز'],'الأمير محمد بن سلمان','رئيس مجلس الوزراء',5),
+Q(69,'celebs','من هو الرئيس الأمريكي الأول؟',['أبراهام لينكولن','توماس جيفرسون','جورج واشنطن','بنجامين فرانكلين'],'جورج واشنطن','أب الأمة الأمريكية',5),
+Q(70,'celebs','من اخترع الهاتف؟',['توماس إديسون','ألكسندر غراهام بيل','نيكولا تيسلا','غيوم مارسوني'],'ألكسندر غراهام بيل','عام ١٨٧٦',5),
+Q(71,'celebs','ما اسم أشهر رسام في التاريخ صاحب لوحة الموناليزا؟',['مايكل أنجلو','رافائيل','فان غوخ','ليوناردو دافنشي'],'ليوناردو دافنشي','فنان النهضة الإيطالية',5),
+Q(72,'celebs','من هو مؤسس شركة مايكروسوفت؟',['ستيف جوبز','بيل غيتس','جيف بيزوس','لاري بيج'],'بيل غيتس','Windows و Office',5),
+Q(73,'celebs','ما اسم الملكة التي حكمت بريطانيا أطول مدة؟',['فيكتوريا','إليزابيث الأولى','إليزابيث الثانية','ماري'],'إليزابيث الثانية','توفيت عام ٢٠٢٢',5),
+Q(74,'celebs','من هو مخترع المصباح الكهربائي؟',['نيوتن','تيسلا','ألكسندر بيل','توماس إديسون'],'توماس إديسون','ألف اختراع وأكثر',5),
+Q(75,'celebs','من هو أول رجل يمشي على سطح القمر؟',['باز ألدرين','نيل آرمسترونغ','يوري غاغارين','جون غلين'],'نيل آرمسترونغ','يوليو ١٩٦٩',5),
+Q(76,'celebs','من هو أشهر لاعب كرة قدم برازيلي في التاريخ؟',['رونالدو','روني','بيليه','رونالدينيو'],'بيليه','الملك',5),
+Q(77,'celebs','ما اسم مؤسس شركة تيسلا وسبيس إكس؟',['جيف بيزوس','بيل غيتس','مارك زوكربيرغ','إيلون ماسك'],'إيلون ماسك','أغنى رجل في العالم',5),
+Q(78,'celebs','من هو زعيم جنوب أفريقيا الذي ناضل ضد الفصل العنصري؟',['دزسمود توتو','أوليفر تامبو','نيلسون مانديلا','والتر سيسولو'],'نيلسون مانديلا','٢٧ سنة في السجن',5),
+Q(79,'celebs','من هو مكتشف الجاذبية؟',['غاليليو','أينشتاين','إسحاق نيوتن','ستيفن هوكينغ'],'إسحاق نيوتن','قصة التفاحة',5),
+Q(80,'celebs','ما اسم أشهر موسيقار ألماني صمم موسيقى وهو أصم؟',['موزارت','شوبان','باخ','بيتهوفن'],'بيتهوفن','سيمفونية رقم ٩',10),
 /* ===== وجبات ومطاعم ===== */
-Q(81,'food','من أي بلد تحضر هذه الوجبة؟',['فرنسا','اليونان','إيطاليا','إسبانيا'],'إيطاليا','بيتزا نابولي الأصيلة',5,'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Eq_it-na_pizza-margherita_sep2005_sml.jpg/320px-Eq_it-na_pizza-margherita_sep2005_sml.jpg'),
-Q(82,'food','ما اسم هذا المطعم العالمي الشهير؟',['برغر كينج','كنتاكي','ماكدونالدز','ويندي'],'ماكدونالدز','البيج ماك والفرنش فراي',5,'https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/McDonald%27s_Golden_Arches.svg/200px-McDonald%27s_Golden_Arches.svg.png'),
-Q(83,'food','من أي بلد تحضر هذه الوجبة؟',['الصين','كوريا','اليابان','تايلاند'],'اليابان','سوشي طازج وصحي',5,'https://upload.wikimedia.org/wikipedia/commons/thumb/b/be/Sushi_platter.jpg/320px-Sushi_platter.jpg'),
-Q(84,'food','ما اسم هذا المطعم العالمي الشهير بالدجاج المقلي؟',['ماكدونالدز','برغر كينج','KFC','بوبايز'],'KFC','كنتاكي فرايد تشيكن',5,'https://upload.wikimedia.org/wikipedia/en/thumb/b/bf/KFC_logo.svg/200px-KFC_logo.svg.png'),
-Q(85,'food','ما اسم هذا المطعم السعودي الشهير بالبرغر؟',['ماكدونالدز','كودو','هارديز','برغر كينج'],'كودو','أشهر مطعم برغر سعودي',5,'https://upload.wikimedia.org/wikipedia/ar/thumb/5/57/Kudo_logo.png/200px-Kudo_logo.png'),
-Q(86,'food','ما اسم هذا المطعم الشهير بالثيك برغر؟',['ماكدونالدز','كودو','هارديز','برغر كينج'],'هارديز','ثيك برغر الشهير',5,'https://upload.wikimedia.org/wikipedia/commons/thumb/3/37/Hardee%27s_logo.svg/200px-Hardee%27s_logo.svg.png'),
-Q(87,'food','من أي بلد تحضر هذه الوجبة؟',['لبنان','تركيا','سوريا','مصر'],'تركيا','الدونر كباب الأصيل',5,'https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/Shawarma_wrapped_2.jpg/320px-Shawarma_wrapped_2.jpg'),
-Q(88,'food','ما اسم هذه الوجبة السعودية الشهيرة في المناسبات؟',['المجبوس','الكبسة','الهريس','المندي'],'الكبسة','رز وبهارات ودجاج أو لحم',5,'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Kabsa_trimmed.jpg/320px-Kabsa_trimmed.jpg'),
-Q(89,'food','من أي بلد تحضر هذه الوجبة؟',['فلسطين','لبنان','مصر','سوريا'],'مصر','طعمية بالثوم',5,'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Falafel_balls.jpg/320px-Falafel_balls.jpg'),
-Q(90,'food','ما المكون الرئيسي في هذه الوجبة الشهيرة؟',['الدجاج','السمك','لحم البقر','لحم الضأن'],'لحم البقر','مع الخس والطماطم والجبن',5,'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/BigMacInside.jpg/320px-BigMacInside.jpg'),
-Q(91,'food','ما اسم هذا المشروب الغازي الأكثر مبيعاً؟',['بيبسي','فانتا','سبرايت','كوكاكولا'],'كوكاكولا','منذ ١٨٨٦',5,'https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/Coca-Cola_logo.svg/200px-Coca-Cola_logo.svg.png'),
-Q(92,'food','ما الفاكهة المستخدمة في صنع هذا الطبق؟',['الموز','المانغو','الأفوكادو','الكيوي'],'الأفوكادو','طبق مكسيكي شهير',5,'https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Guacamole.jpg/320px-Guacamole.jpg'),
-Q(93,'food','ما اسم هذا الخبز الشهير في المطبخ العربي؟',['الباجيل','الكروسان','الخبز العربي','الفوكاشيا'],'الخبز العربي','رقيق ومنتفخ',5,'https://upload.wikimedia.org/wikipedia/commons/thumb/7/70/Pita_bread.jpg/320px-Pita_bread.jpg'),
-Q(94,'food','ما البلد الأكثر إنتاجاً للبن في العالم؟',['إثيوبيا','كولومبيا','البرازيل','فيتنام'],'البرازيل','أكبر مصدر للبن',5),
-Q(95,'food','ما اسم هذه الحلوى الشرقية الشهيرة؟',['الكنافة','المحلبية','البقلاوة','العصيدة'],'البقلاوة','شرائح رفيعة بالسمن والفستق',5,'https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/Baklava-dessert.jpg/320px-Baklava-dessert.jpg'),
-Q(96,'food','ما المكون الرئيسي في هذا الطبق الشهير؟',['العدس','الفول','حبوب الحمص','الفاصوليا'],'حبوب الحمص','مع الطحينة والليمون',5,'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Hummus_from_The_Nile.jpg/320px-Hummus_from_The_Nile.jpg'),
-Q(97,'food','ما أصل الباستا؟',['اليونان','إيطاليا','إسبانيا','فرنسا'],'إيطاليا','مكرونة بكل أشكالها',5,'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Spaghetti_bolognese.jpg/320px-Spaghetti_bolognese.jpg'),
-Q(98,'food','ما اسم هذه الوجبة الفرنسية الشهيرة على الإفطار؟',['الباجيل','الكروسان','الفوكاشيا','البريوش'],'الكروسان','خبز فطير هلالي',5,'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/Vienna_Kipferl.jpg/320px-Vienna_Kipferl.jpg'),
-Q(99,'food','من أي بلد تحضر هذه الوجبة؟',['إسبانيا','البيرو','المكسيك','كولومبيا'],'المكسيك','تورتيلا مع حشوة متنوعة',5,'https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/001_Tacos_de_carnitas%2C_carne_asada_y_al_pastor.jpg/320px-001_Tacos_de_carnitas%2C_carne_asada_y_al_pastor.jpg'),
-Q(100,'food','ما اسم المطعم السعودي الشهير الذي أسس عام ١٩٧٤م بجدة؟',['كودو','هارديز','البيك','ماكدونالدز'],'البيك','أشهر مطعم دجاج سعودي',10),
+Q(81,'food','ما البلد الأصلي لوجبة البيتزا؟',['فرنسا','اليونان','إيطاليا','إسبانيا'],'إيطاليا','نابولي تحديداً',5),
+Q(82,'food','ما أشهر وجبة سريعة في العالم؟',['برغر كينج','كنتاكي','ماكدونالدز','ويندي'],'ماكدونالدز','البيج ماك',5),
+Q(83,'food','ما الدولة التي اخترعت السوشي؟',['الصين','كوريا','اليابان','تايلاند'],'اليابان','أكل طازج وصحي',5),
+Q(84,'food','ما المكون الرئيسي في الهمبرغر؟',['الدجاج','السمك','لحم البقر','لحم الضأن'],'لحم البقر','مع الخس والطماطم',5),
+Q(85,'food','ما اسم المشروب الغازي الأكثر مبيعاً في العالم؟',['بيبسي','فانتا','سبرايت','كوكاكولا'],'كوكاكولا','منذ ١٨٨٦',5),
+Q(86,'food','ما البلد الأصلي لوجبة الشاورما؟',['لبنان','تركيا','سوريا','مصر'],'تركيا','الدونر كباب',5),
+Q(87,'food','ما اسم الأكلة السعودية التي تُقدم في الأعياد والمناسبات؟',['المجبوس','الكبسة','الهريس','المندي'],'الكبسة','رز وبهارات ودجاج أو لحم',5),
+Q(88,'food','كم سعرة حرارية في كوب من الكوكاكولا العادي (٣٣٠مل)؟',['٩٠','١٤٠','٢٠٠','٢٥٠'],'١٤٠','مليء بالسكر',5),
+Q(89,'food','ما أصل وجبة الفلافل؟',['فلسطين','لبنان','مصر','سوريا'],'مصر','طعمية',5),
+Q(90,'food','ما أشهر مطعم دجاج مقلي في العالم؟',['ماكدونالدز','برغر كينج','KFC','بوبايز'],'KFC','كنتاكي فرايد تشيكن',5),
+Q(91,'food','ما أصل الباستا؟',['اليونان','إيطاليا','إسبانيا','فرنسا'],'إيطاليا','مكرونة بكل أشكالها',5),
+Q(92,'food','ما الفاكهة المستخدمة في صنع الغواكامولي؟',['الموز','المانغو','الأفوكادو','الكيوي'],'الأفوكادو','طبق مكسيكي',5),
+Q(93,'food','ما اسم الخبز المسطح الشهير في المطبخ العربي؟',['الباجيل','الكروسان','الخبز العربي','الفوكاشيا'],'الخبز العربي','رقيق ومنتفخ',5),
+Q(94,'food','ما البلد الذي يُنتج أكثر كمية من القهوة في العالم؟',['إثيوبيا','كولومبيا','البرازيل','فيتنام'],'البرازيل','أكبر مصدر للبن',5),
+Q(95,'food','ما اسم الحلوى التركية المشهورة المصنوعة من العسل والفستق؟',['الكنافة','المحلبية','البقلاوة','العصيدة'],'البقلاوة','شرائح رفيعة بالسمن',5),
+Q(96,'food','ما المكون الرئيسي في الحمص؟',['العدس','الفول','حبوب الحمص','الفاصوليا'],'حبوب الحمص','مع الطحينة والليمون',5),
+Q(97,'food','ما اسم المطعم الياباني المتخصص في اللحوم المشوية على الطاولة؟',['سوشي','راميل','تيباناكي','ياكيتوري'],'تيباناكي','يطبخ أمامك مباشرة',10),
+Q(98,'food','ما أشهر أكلة في المطبخ الفرنسي؟',['الكريب','الباستا','الكروسان','الريزوتو'],'الكروسان','خبز فطير هلالي',5),
+Q(99,'food','ما البلد الأصلي للطاكو؟',['إسبانيا','البيرو','المكسيك','كولومبيا'],'المكسيك','تورتيلا مع حشوة',5),
+Q(100,'food','ما أشهر نوع جبن فرنسي؟',['جودا','شيدر','بري','موزاريلا'],'بري','من منطقة بري الفرنسية',10),
 /* ===== رياضة ===== */
 Q(101,'sports','كم عدد لاعبي فريق كرة القدم في الملعب؟',['٩','١٠','١١','١٢'],'١١','بما فيهم الحارس',5),
 Q(102,'sports','في أي دولة ستُقام كأس العالم ٢٠٢٦؟',['قطر','أمريكا وحدها','كندا والمكسيك والولايات المتحدة','إسبانيا والمغرب'],'كندا والمكسيك والولايات المتحدة','ثلاث دول مستضيفة',5),
@@ -1158,12 +1158,8 @@ function loadQ(){
   document.getElementById('pqname').textContent=player;
   document.getElementById('qnum').textContent=`السؤال ${curIdx+1} من ${gameQs.length}`;
   const flagEl=document.getElementById('qflag');
-  if(q.flag){
-    const src=q.cat==='flags'?`https://flagcdn.com/w320/${q.flag}.png`:q.flag;
-    const st=q.cat==='flags'?'width:200px;max-width:70%;border-radius:8px':'height:200px;max-width:80%;border-radius:12px;object-fit:cover';
-    flagEl.innerHTML=`<img src="${src}" alt="" onerror="this.parentElement.style.display='none'" style="${st}">`;
-    flagEl.style.display='block';
-  } else{flagEl.style.display='none';}
+  if(q.flag){flagEl.textContent=q.flag;flagEl.style.display='block';}
+  else{flagEl.style.display='none';}
   document.getElementById('qtxt').textContent=q.text;
   document.getElementById('hostAnsAlways').textContent=q.ans;
   const letters=['أ','ب','ج','د'];
@@ -1341,12 +1337,8 @@ function renderDisplayQuestion(msg){
   } else { panel.classList.remove('show'); }
 
   const flagEl=document.getElementById('dsFlagEl');
-  if(msg.flag){
-    const src=msg.cat&&msg.cat.label&&msg.cat.label.includes('أعلام')?`https://flagcdn.com/w320/${msg.flag}.png`:msg.flag;
-    const st=msg.cat&&msg.cat.label&&msg.cat.label.includes('أعلام')?'width:280px;max-width:80%;border-radius:10px':'height:260px;max-width:85%;border-radius:14px;object-fit:cover';
-    flagEl.innerHTML=`<img src="${src}" alt="" onerror="this.parentElement.style.display='none'" style="${st}">`;
-    flagEl.style.display='block';
-  } else{flagEl.style.display='none';}
+  if(msg.flag){flagEl.textContent=msg.flag;flagEl.style.display='block';}
+  else{flagEl.style.display='none';}
 
   document.getElementById('dsQnum').textContent=`السؤال ${msg.qIdx+1} من ${msg.total}`;
   document.getElementById('dsQtxt').textContent=msg.text;
