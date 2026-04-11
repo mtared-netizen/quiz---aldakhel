@@ -359,6 +359,12 @@ body::before{content:'';position:fixed;inset:0;opacity:.35;pointer-events:none;z
 <body>
 <div id="toast"></div>
 
+<!-- Reaction overlay for عبدالرحمن محمد -->
+<div id="reactionOverlay" style="display:none;position:fixed;inset:0;z-index:9999;background:#000;align-items:center;justify-content:center;flex-direction:column;cursor:pointer" onclick="closeReaction()">
+  <img id="reactionImg" src="" alt="" style="max-width:100vw;max-height:100vh;object-fit:contain;width:100%;height:100%">
+  <div id="reactionLabel" style="position:absolute;bottom:40px;font-size:2.5rem;font-weight:900;color:#fff;text-shadow:0 0 20px rgba(0,0,0,.8);font-family:'Tajawal',sans-serif"></div>
+</div>
+
 <!-- MODAL -->
 <div class="movl" id="mModal">
   <div class="modal">
@@ -1198,6 +1204,27 @@ function hostSelectOpt(btn,chosen,correct){
   revealAnswer(false, isWrong);
 }
 
+const REACTION_PLAYERS={
+  'عبدالرحمن محمد':{happy:'abdulrahman_happy.jpg',angry:'abdulrahman_angry.jpg'}
+};
+let reactionTimer=null;
+function showReaction(player, correct){
+  const r=REACTION_PLAYERS[player];
+  if(!r) return;
+  const img=correct?r.happy:r.angry;
+  const label=correct?'🎉 أحسنت يا عبدالرحمن!':'😤 أجابة خاطئة!';
+  const el=document.getElementById('reactionOverlay');
+  document.getElementById('reactionImg').src=img;
+  document.getElementById('reactionLabel').textContent=label;
+  el.style.display='flex';
+  clearTimeout(reactionTimer);
+  reactionTimer=setTimeout(closeReaction, 4000);
+}
+function closeReaction(){
+  document.getElementById('reactionOverlay').style.display='none';
+  clearTimeout(reactionTimer);
+}
+
 function revealAnswer(timedOut, isWrong){
   if(revealed)return;revealed=true;
   clearInterval(timerInt);
@@ -1211,6 +1238,9 @@ function revealAnswer(timedOut, isWrong){
   // صوت حسب الحالة
   if(timedOut||isWrong) SFX.timeout();
   else SFX.correct();
+
+  // عرض صورة رد فعل المتسابق
+  if(curPlayer) showReaction(curPlayer, !(timedOut||isWrong));
 
   // إضافة النقاط تلقائياً لصاحب السؤال عند الإجابة الصحيحة
   if(!timedOut && !isWrong && curPlayer){
