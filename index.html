@@ -1209,17 +1209,23 @@ function hostSelectOpt(btn,chosen,correct){
   revealAnswer(false, isWrong);
 }
 
-const REACTION_PLAYERS={
-  'عبدالرحمن محمد':{happy:'abdulrahman_happy.jpg',angry:'abdulrahman_angry.jpg'}
-};
+const REACTION_PLAYERS=[
+  {keys:['عبدالرحمن محمد','عبدالرحمن'],   happy:'رفع اليدين عبدالرحمن محمد 1.png', angry:'غضب عبدالرحمن محمد2.png'},
+  {keys:['انس ناصر','أنس ناصر','انس','أنس'],happy:'فرح انس 1.png',                  angry:null},
+  {keys:['يوسف محمد قيران'],                happy:'يوسف محمد قيران 1.png',          angry:'يوسف محمد قيران 2.png'},
+  {keys:['يوسف محمد طريد','يوسف محمد ط','يوسف محمدط','يوسف محمد ط '],happy:'يوسف محمد 1.png', angry:'يوسف محمد ط 2.png'},
+  {keys:['ايوب محمد','أيوب محمد','ايوب','أيوب'], happy:'ايوب 1.png',               angry:'ايوب 2.png'},
+];
 let reactionTimer=null;
 function showReaction(player, correct){
-  const r=REACTION_PLAYERS[player];
-  if(!r) return;
-  const img=correct?r.happy:r.angry;
-  const label=correct?'🎉 أحسنت يا عبدالرحمن!':'😤 أجابة خاطئة!';
+  const entry=REACTION_PLAYERS.find(e=>e.keys.some(k=>player===k||player.includes(k)||k.includes(player)));
+  if(!entry) return;
+  const img=correct?entry.happy:entry.angry;
+  if(!img) return;
+  const firstName=player.split(' ')[0];
+  const label=correct?`🎉 أحسنت يا ${firstName}!`:`😤 إجابة خاطئة يا ${firstName}!`;
   const el=document.getElementById('reactionOverlay');
-  document.getElementById('reactionImg').src=img;
+  document.getElementById('reactionImg').src=encodeURI(img);
   document.getElementById('reactionLabel').textContent=label;
   el.style.display='flex';
   clearTimeout(reactionTimer);
