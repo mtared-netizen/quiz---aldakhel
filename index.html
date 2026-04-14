@@ -361,7 +361,7 @@ body::before{content:'';position:fixed;inset:0;opacity:.35;pointer-events:none;z
 <div id="toast"></div>
 
 <!-- Reaction overlay for عبدالرحمن محمد -->
-<div id="reactionOverlay" style="display:none;position:fixed;inset:0;z-index:9999;background:#000;align-items:center;justify-content:center;flex-direction:column;cursor:pointer" onclick="closeReaction()">
+<div id="reactionOverlay" style="display:none;position:fixed;inset:0;z-index:10001;background:#000;align-items:center;justify-content:center;flex-direction:column;cursor:pointer" onclick="closeReaction()">
   <img id="reactionImg" src="" alt="" style="max-width:100vw;max-height:100vh;object-fit:contain;width:100%;height:100%">
   <div id="reactionLabel" style="position:absolute;bottom:40px;font-size:2.5rem;font-weight:900;color:#fff;text-shadow:0 0 20px rgba(0,0,0,.8);font-family:'Tajawal',sans-serif"></div>
 </div>
@@ -1234,7 +1234,7 @@ function loadQ(){
   if(q.flag){
     const src=q.cat==='flags'?`https://flagcdn.com/w320/${q.flag}.png`:q.flag;
     const st=q.cat==='flags'?'width:200px;max-width:70%;border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,.4)':'height:200px;max-width:80%;border-radius:12px;object-fit:cover';
-    flagEl.innerHTML=`<img src="${src}" alt="" onerror="this.parentElement.style.display='none'" style="${st}">`;
+    flagEl.innerHTML=`<img src="${src}" alt="" referrerpolicy="no-referrer" onerror="this.parentElement.style.display='none'" style="${st}">`;
     flagEl.style.display='block';
   }else{flagEl.style.display='none';}
   document.getElementById('qtxt').textContent=q.text;
@@ -1452,7 +1452,7 @@ function renderDisplayQuestion(msg){
     const isFlag=msg.cat&&msg.cat.label&&msg.cat.label.includes('أعلام');
     const src=isFlag?`https://flagcdn.com/w320/${msg.flag}.png`:msg.flag;
     const st=isFlag?'width:280px;max-width:80%;border-radius:10px;box-shadow:0 6px 24px rgba(0,0,0,.5)':'height:260px;max-width:85%;border-radius:14px;object-fit:cover';
-    flagEl.innerHTML=`<img src="${src}" alt="" onerror="this.parentElement.style.display='none'" style="${st}">`;
+    flagEl.innerHTML=`<img src="${src}" alt="" referrerpolicy="no-referrer" onerror="this.parentElement.style.display='none'" style="${st}">`;
     flagEl.style.display='block';
   }else{flagEl.style.display='none';}
 
