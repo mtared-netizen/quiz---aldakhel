@@ -121,7 +121,7 @@ body::before{content:'';position:fixed;inset:0;opacity:.35;pointer-events:none;z
 .hqcard{background:var(--surface);border:.5px solid var(--border2);border-radius:20px;padding:1.5rem;position:relative;overflow:hidden}
 .hqcard::before{content:'';position:absolute;top:-30px;right:-30px;width:140px;height:140px;border-radius:50%;background:var(--gold-dim);pointer-events:none}
 .qnum{font-size:.78rem;color:var(--text3);margin-bottom:.7rem}
-.qflag{font-size:4.5rem;text-align:center;margin-bottom:.7rem}
+.qflag{text-align:center;margin-bottom:.7rem}.qflag img{width:200px;max-width:70%;border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,.4)}
 .qtxt{font-size:clamp(.95rem,2vw,1.25rem);font-weight:500;line-height:1.7;color:var(--text);margin-bottom:.8rem}
 /* MCQ in HOST — shows correct highlighted */
 .mcqgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:.8rem}
@@ -205,7 +205,7 @@ body::before{content:'';position:fixed;inset:0;opacity:.35;pointer-events:none;z
 .ds-qcard{background:var(--surface);border:.5px solid var(--border2);border-radius:24px;padding:2.5rem;position:relative;overflow:hidden;margin-bottom:1.5rem;animation:fadeUp .4s both}
 .ds-qcard::before{content:'';position:absolute;top:-50px;right:-50px;width:200px;height:200px;border-radius:50%;background:var(--gold-dim);pointer-events:none}
 .ds-qnum{font-size:.82rem;color:var(--text3);margin-bottom:1rem}
-.ds-flag{font-size:6rem;text-align:center;margin-bottom:1rem}
+.ds-flag{text-align:center;margin-bottom:1rem}.ds-flag img{width:280px;max-width:80%;border-radius:10px;box-shadow:0 6px 24px rgba(0,0,0,.5)}
 .ds-qtxt{font-size:clamp(1.2rem,3vw,1.8rem);font-weight:500;line-height:1.65;color:var(--text)}
 /* MCQ for players — big and clear */
 .ds-mcqgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
@@ -1165,8 +1165,12 @@ function loadQ(){
   document.getElementById('pqname').textContent=player;
   document.getElementById('qnum').textContent=`السؤال ${curIdx+1} من ${gameQs.length}`;
   const flagEl=document.getElementById('qflag');
-  if(q.flag){flagEl.textContent=q.flag;flagEl.style.display='block';}
-  else{flagEl.style.display='none';}
+  if(q.flag){
+    const src=q.cat==='flags'?`https://flagcdn.com/w320/${q.flag}.png`:q.flag;
+    const st=q.cat==='flags'?'width:200px;max-width:70%;border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,.4)':'height:200px;max-width:80%;border-radius:12px;object-fit:cover';
+    flagEl.innerHTML=`<img src="${src}" alt="" onerror="this.parentElement.style.display='none'" style="${st}">`;
+    flagEl.style.display='block';
+  }else{flagEl.style.display='none';}
   document.getElementById('qtxt').textContent=q.text;
   document.getElementById('hostAnsAlways').textContent=q.ans;
   const letters=['أ','ب','ج','د'];
@@ -1368,8 +1372,13 @@ function renderDisplayQuestion(msg){
   } else { panel.classList.remove('show'); }
 
   const flagEl=document.getElementById('dsFlagEl');
-  if(msg.flag){flagEl.textContent=msg.flag;flagEl.style.display='block';}
-  else{flagEl.style.display='none';}
+  if(msg.flag){
+    const isFlag=msg.cat&&msg.cat.label&&msg.cat.label.includes('أعلام');
+    const src=isFlag?`https://flagcdn.com/w320/${msg.flag}.png`:msg.flag;
+    const st=isFlag?'width:280px;max-width:80%;border-radius:10px;box-shadow:0 6px 24px rgba(0,0,0,.5)':'height:260px;max-width:85%;border-radius:14px;object-fit:cover';
+    flagEl.innerHTML=`<img src="${src}" alt="" onerror="this.parentElement.style.display='none'" style="${st}">`;
+    flagEl.style.display='block';
+  }else{flagEl.style.display='none';}
 
   document.getElementById('dsQnum').textContent=`السؤال ${msg.qIdx+1} من ${msg.total}`;
   document.getElementById('dsQtxt').textContent=msg.text;
