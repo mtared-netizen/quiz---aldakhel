@@ -871,6 +871,57 @@ const SFX={
   ]),
   // عداد تنازلي أخير 5 ثوان
   tick:()=>_playTone([[880,0,.06,'sine',.18]]),
+
+  // تصفيق جمهور + تصفير للإجابة الصحيحة
+  crowd_cheer:()=>{
+    if(!_ac)return; _resumeAC();
+    const now=_ac.currentTime, dur=2.8;
+    // تصفيق: نبضات noise عشوائية سريعة
+    for(let i=0;i<55;i++){
+      const t=now+i*0.045+Math.random()*0.02;
+      const buf=_ac.createBuffer(1,_ac.sampleRate*0.04,_ac.sampleRate);
+      const d=buf.getChannelData(0);
+      for(let j=0;j<d.length;j++) d[j]=(Math.random()*2-1)*0.6;
+      const s=_ac.createBufferSource(), g=_ac.createGain();
+      const f=_ac.createBiquadFilter(); f.type='bandpass'; f.frequency.value=1200+Math.random()*800; f.Q.value=0.8;
+      const fade=Math.min(1,(dur-(t-now))/0.4);
+      g.gain.setValueAtTime(0.18*fade,t); g.gain.exponentialRampToValueAtTime(0.001,t+0.04);
+      s.buffer=buf; s.connect(f); f.connect(g); g.connect(_ac.destination); s.start(t);
+    }
+    // تصفير: موجة جيب عالية مع تذبذب
+    const o=_ac.createOscillator(), gw=_ac.createGain();
+    o.type='sine'; o.frequency.setValueAtTime(2400,now); o.frequency.linearRampToValueAtTime(2800,now+0.3);
+    o.frequency.linearRampToValueAtTime(2200,now+0.7); o.frequency.linearRampToValueAtTime(2600,now+1.1);
+    gw.gain.setValueAtTime(0,now); gw.gain.linearRampToValueAtTime(0.12,now+0.1);
+    gw.gain.linearRampToValueAtTime(0.08,now+1.0); gw.gain.linearRampToValueAtTime(0,now+1.4);
+    o.connect(gw); gw.connect(_ac.destination); o.start(now); o.stop(now+1.5);
+    // هتاف عالي: موجة مثلثية صاعدة
+    _playTone([[300,0.1,.15,'triangle',.15],[400,.25,.15,'triangle',.18],[500,.4,.2,'triangle',.2],[600,.6,.3,'triangle',.18]]);
+  },
+
+  // أووه جمهور للإجابة الخاطئة
+  crowd_boo:()=>{
+    if(!_ac)return; _resumeAC();
+    const now=_ac.currentTime;
+    // أووه جماعي: موجات مثلثية هابطة
+    [[180,0,.9,'triangle',.22],[160,.1,.9,'triangle',.18],[140,.2,1.0,'triangle',.16],
+     [120,.35,.9,'sawtooth',.14],[100,.5,.8,'sawtooth',.12]].forEach(([f,s,d,t,v])=>{
+      const o=_ac.createOscillator(), g=_ac.createGain();
+      o.type=t; o.frequency.setValueAtTime(f,now+s); o.frequency.linearRampToValueAtTime(f*0.7,now+s+d);
+      g.gain.setValueAtTime(v,now+s); g.gain.exponentialRampToValueAtTime(0.001,now+s+d+0.1);
+      o.connect(g); g.connect(_ac.destination); o.start(now+s); o.stop(now+s+d+0.2);
+    });
+    // ضوضاء خفيفة مصاحبة
+    for(let i=0;i<8;i++){
+      const t=now+i*0.15;
+      const buf=_ac.createBuffer(1,_ac.sampleRate*0.12,_ac.sampleRate);
+      const d=buf.getChannelData(0); for(let j=0;j<d.length;j++) d[j]=(Math.random()*2-1)*0.3;
+      const s=_ac.createBufferSource(), g=_ac.createGain(), f=_ac.createBiquadFilter();
+      f.type='lowpass'; f.frequency.value=600;
+      g.gain.setValueAtTime(0.08,t); g.gain.exponentialRampToValueAtTime(0.001,t+0.12);
+      s.buffer=buf; s.connect(f); f.connect(g); g.connect(_ac.destination); s.start(t);
+    }
+  },
 };
 // تفعيل السياق الصوتي عند أول تفاعل
 document.addEventListener('click',_resumeAC,{once:true});
@@ -1228,6 +1279,7 @@ function showReaction(player, correct){
   document.getElementById('reactionImg').src=encodeURI(img);
   document.getElementById('reactionLabel').textContent=label;
   el.style.display='flex';
+  if(correct) SFX.crowd_cheer(); else SFX.crowd_boo();
   clearTimeout(reactionTimer);
   reactionTimer=setTimeout(closeReaction, 4000);
 }
