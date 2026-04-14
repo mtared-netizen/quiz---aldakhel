@@ -790,7 +790,7 @@ function broadcast(msg){
 function handleMsg(msg, direct){
   if(isHost && !direct) return; // host ignores BroadcastChannel messages only
   if(msg.type==='question') renderDisplayQuestion(msg);
-  if(msg.type==='revealed') renderDisplayReveal(msg);
+  if(msg.type==='revealed'){ renderDisplayReveal(msg); if(msg.reactionPlayer) showReaction(msg.reactionPlayer, msg.reactionCorrect); }
   if(msg.type==='scores') renderDisplayScores(msg.scores,msg.avatarsData);
   if(msg.type==='special') renderDisplaySpecial(msg);
   if(msg.type==='waiting'){ showDsWaiting(msg.text||'⏳ بانتظار السؤال التالي...'); }
@@ -1266,6 +1266,7 @@ function revealAnswer(timedOut, isWrong){
   }
 
   // Broadcast reveal مع الدرجات المحدّثة
+  const correct=!(timedOut||isWrong);
   broadcast({
     type:'revealed',
     ans:q.ans,
@@ -1274,6 +1275,8 @@ function revealAnswer(timedOut, isWrong){
     showWrong:!!(timedOut||isWrong),
     scores:getScoreData(),
     avatarsData:getAvatarData(),
+    reactionPlayer:curPlayer||null,
+    reactionCorrect:correct,
   });
 }
 
