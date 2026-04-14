@@ -1024,8 +1024,8 @@ function startGame(){
   sessionScores={};awarded={};shuffledOptsCache={};_sessionSaved=false;
   players.forEach(p=>sessionScores[p]=0);
   playerQPools={};
-  const catIds=[...activeCats];
-  // بناء بنك أسئلة مشترك مخلوط لكل فئة
+  // خلط الفئات عشوائياً في كل لعبة + خلط الأسئلة داخل كل فئة
+  const catIds=shuffle([...activeCats]);
   const sharedPool={};
   catIds.forEach(cid=>{ sharedPool[cid]=shuffle(ALL_Q.filter(q=>q.cat===cid)); });
 
@@ -1033,7 +1033,7 @@ function startGame(){
   const rotatingPlayers=shuffle([...players]);
   gameQs=[];
 
-  // كل متسابق يحصل على سؤال واحد من كل فئة بالترتيب الدوري
+  // جميع المتسابقين يجيبون على نفس الفئة قبل الانتقال للفئة التالية
   catIds.forEach(cid=>{
     rotatingPlayers.forEach(p=>{
       const pool=sharedPool[cid];
