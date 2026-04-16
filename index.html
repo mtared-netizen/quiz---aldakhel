@@ -1405,10 +1405,9 @@ function renderLiveScores(){
   const last=sorted[sorted.length-1];
   document.getElementById('liveScores').innerHTML=sorted.map((p,i)=>`
     <div class="srow ${p===last?'top1':''}">
-      <span style="font-size:.7rem;color:var(--text3);width:14px;text-align:center">${i+1}</span>
-      ${avHTML(p,26,'lav')}
       <span class="sname">${p}</span>
       <span class="spts">${sessionScores[p]||0}</span>
+      ${avHTML(p,26,'lav')}
     </div>`).join('');
 }
 function skipQ(){clearInterval(timerInt);broadcast({type:'waiting',text:'⏳ السؤال التالي قريباً...'});nextQ();}
