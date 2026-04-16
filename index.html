@@ -817,10 +817,12 @@ function persist(){
     localStorage.setItem('mj4-s',JSON.stringify(scores));
   }catch(e){}
 }
+const DEFAULT_PLAYERS=['عبدالرحمن محمد','انس ناصر','يوسف محمد قيران','يوسف محمد ط','ايوب محمد'];
 function loadData(){
   try{
     const p=localStorage.getItem('mj4-p'),a=localStorage.getItem('mj4-a'),s=localStorage.getItem('mj4-s');
     if(p)players=JSON.parse(p);
+    else players=[...DEFAULT_PLAYERS];
     if(a)avatars=JSON.parse(a);
     if(s)scores=JSON.parse(s);
     players.forEach(n=>{if(scores[n]===undefined)scores[n]=0;});
