@@ -900,66 +900,104 @@ const SFX={
   crowd_cheer:()=>{
     if(!_ac)return; _resumeAC();
     const now=_ac.currentTime;
-    // تصفيق قوي: نبضات ضوضاء كثيفة
-    for(let i=0;i<80;i++){
-      const t=now+i*0.035+Math.random()*0.015;
-      const buf=_ac.createBuffer(1,Math.floor(_ac.sampleRate*0.055),_ac.sampleRate);
+    const master=_ac.createGain(); master.gain.value=1.0; master.connect(_ac.destination);
+
+    // تصفيق: نبضات ضوضاء حادة وواضحة
+    const clapCount=55;
+    for(let i=0;i<clapCount;i++){
+      const t=now+0.02+i*0.048+Math.random()*0.008;
+      const dur=0.04+Math.random()*0.015;
+      const sr=_ac.sampleRate;
+      const buf=_ac.createBuffer(1,Math.floor(sr*dur),sr);
       const d=buf.getChannelData(0);
-      for(let j=0;j<d.length;j++) d[j]=(Math.random()*2-1);
-      const s=_ac.createBufferSource(), g=_ac.createGain();
-      const f=_ac.createBiquadFilter(); f.type='bandpass';
-      f.frequency.value=900+Math.random()*1200; f.Q.value=0.5;
-      const vol=i<10?(i/10)*0.55:i>65?((80-i)/15)*0.55:0.55;
-      g.gain.setValueAtTime(vol,t); g.gain.exponentialRampToValueAtTime(0.001,t+0.055);
-      s.buffer=buf; s.connect(f); f.connect(g); g.connect(_ac.destination); s.start(t);
+      for(let j=0;j<d.length;j++){
+        const env=j<sr*0.004?(j/(sr*0.004)):Math.exp(-j/(sr*0.012));
+        d[j]=(Math.random()*2-1)*env;
+      }
+      const s=_ac.createBufferSource();
+      const hp=_ac.createBiquadFilter(); hp.type='highpass'; hp.frequency.value=800;
+      const bp=_ac.createBiquadFilter(); bp.type='bandpass'; bp.frequency.value=1800+Math.random()*1000; bp.Q.value=0.7;
+      const g=_ac.createGain();
+      const fade=i<8?(i/8):i>44?((clapCount-i)/(clapCount-44)):1;
+      g.gain.setValueAtTime(0.75*fade,t);
+      s.buffer=buf; s.connect(hp); hp.connect(bp); bp.connect(g); g.connect(master); s.start(t);
     }
-    // تصفير حاد مرتفع
-    [[2600,0,1.2,.14],[2900,.15,1.0,.12],[2400,.3,.9,.1],[2700,.55,.8,.1]].forEach(([freq,st,dr,vol])=>{
-      const o=_ac.createOscillator(), g=_ac.createGain();
-      o.type='sine'; o.frequency.setValueAtTime(freq,now+st);
-      o.frequency.linearRampToValueAtTime(freq*1.08,now+st+dr*0.3);
-      o.frequency.linearRampToValueAtTime(freq*0.95,now+st+dr);
-      g.gain.setValueAtTime(0,now+st); g.gain.linearRampToValueAtTime(vol,now+st+0.05);
-      g.gain.linearRampToValueAtTime(vol*0.6,now+st+dr*0.7);
-      g.gain.exponentialRampToValueAtTime(0.001,now+st+dr+0.1);
-      o.connect(g); g.connect(_ac.destination); o.start(now+st); o.stop(now+st+dr+0.15);
+
+    // تصفير واضح وحاد — موجة ساينية نقية مع vibrato
+    const wFreqs=[2700,3100,2500,2900];
+    wFreqs.forEach((freq,idx)=>{
+      const st=now+idx*0.22;
+      const dr=0.9-idx*0.06;
+      const o=_ac.createOscillator(), lfo=_ac.createOscillator(), lfoG=_ac.createGain();
+      const g=_ac.createGain();
+      o.type='sine'; o.frequency.value=freq;
+      lfo.type='sine'; lfo.frequency.value=6+idx*1.5;
+      lfoG.gain.value=freq*0.03;
+      lfo.connect(lfoG); lfoG.connect(o.frequency);
+      g.gain.setValueAtTime(0,st);
+      g.gain.linearRampToValueAtTime(0.55,st+0.04);
+      g.gain.setValueAtTime(0.55,st+dr*0.6);
+      g.gain.exponentialRampToValueAtTime(0.001,st+dr+0.1);
+      o.connect(g); g.connect(master);
+      lfo.start(st); o.start(st); lfo.stop(st+dr+0.15); o.stop(st+dr+0.15);
     });
-    // هتاف جماعي صاعد
-    [[200,.1,.3,'triangle',.35],[280,.25,.3,'triangle',.3],[350,.4,.35,'triangle',.28],
-     [420,.55,.4,'triangle',.25],[500,.7,.5,'triangle',.22]].forEach(([f,s,d,t,v])=>{
-      const o=_ac.createOscillator(),g=_ac.createGain();
-      o.type=t; o.frequency.setValueAtTime(f,now+s); o.frequency.linearRampToValueAtTime(f*1.15,now+s+d);
-      g.gain.setValueAtTime(v,now+s); g.gain.exponentialRampToValueAtTime(0.001,now+s+d+0.05);
-      o.connect(g); g.connect(_ac.destination); o.start(now+s); o.stop(now+s+d+0.1);
+
+    // هتاف صاعد واضح
+    [[280,0.05,0.5,0.5],[380,0.2,0.5,0.45],[480,0.38,0.55,0.4],[580,0.58,0.6,0.35]].forEach(([freq,st,dr,vol])=>{
+      const o=_ac.createOscillator(), g=_ac.createGain();
+      o.type='triangle';
+      o.frequency.setValueAtTime(freq,now+st);
+      o.frequency.linearRampToValueAtTime(freq*1.2,now+st+dr);
+      g.gain.setValueAtTime(vol,now+st);
+      g.gain.exponentialRampToValueAtTime(0.001,now+st+dr+0.05);
+      o.connect(g); g.connect(master); o.start(now+st); o.stop(now+st+dr+0.1);
     });
   },
 
-  // أووه جمهور للإجابة الخاطئة
+  // أووووه جمهور للإجابة الخاطئة
   crowd_boo:()=>{
     if(!_ac)return; _resumeAC();
     const now=_ac.currentTime;
-    // أووه عميق قوي من أصوات متعددة
-    [[220,0,1.4,'sawtooth',.45],[190,.05,1.4,'sawtooth',.4],[160,.1,1.5,'sawtooth',.38],
-     [140,.15,1.4,'triangle',.35],[120,.2,1.3,'triangle',.3],[100,.25,1.2,'sawtooth',.25]].forEach(([freq,st,dr,tp,vol])=>{
-      const o=_ac.createOscillator(), g=_ac.createGain(), f=_ac.createBiquadFilter();
-      f.type='lowpass'; f.frequency.value=800;
-      o.type=tp; o.frequency.setValueAtTime(freq,now+st);
-      o.frequency.linearRampToValueAtTime(freq*0.55,now+st+dr);
-      g.gain.setValueAtTime(vol,now+st+0.02); g.gain.linearRampToValueAtTime(vol*0.7,now+st+dr*0.6);
-      g.gain.exponentialRampToValueAtTime(0.001,now+st+dr+0.15);
-      o.connect(f); f.connect(g); g.connect(_ac.destination); o.start(now+st); o.stop(now+st+dr+0.2);
+    const master=_ac.createGain(); master.gain.value=1.0; master.connect(_ac.destination);
+
+    // صوت "أووووه" هابط قوي وواضح — طبقات صوتية متعددة
+    const voices=[
+      [260, 0.00, 1.6, 0.70],
+      [230, 0.03, 1.6, 0.65],
+      [200, 0.06, 1.7, 0.60],
+      [175, 0.09, 1.6, 0.55],
+      [520, 0.00, 1.5, 0.30],  // تضخيم الطيف الأوسط
+      [460, 0.05, 1.5, 0.28],
+    ];
+    voices.forEach(([freq,st,dr,vol])=>{
+      const o=_ac.createOscillator(), g=_ac.createGain();
+      const lp=_ac.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=1200; lp.Q.value=2;
+      o.type='sawtooth';
+      o.frequency.setValueAtTime(freq,      now+st);
+      o.frequency.setValueAtTime(freq,      now+st+0.05);
+      o.frequency.linearRampToValueAtTime(freq*0.62, now+st+dr);
+      g.gain.setValueAtTime(0,     now+st);
+      g.gain.linearRampToValueAtTime(vol,   now+st+0.08);
+      g.gain.setValueAtTime(vol,            now+st+0.5);
+      g.gain.linearRampToValueAtTime(vol*0.4, now+st+dr);
+      g.gain.exponentialRampToValueAtTime(0.001, now+st+dr+0.2);
+      o.connect(lp); lp.connect(g); g.connect(master);
+      o.start(now+st); o.stop(now+st+dr+0.25);
     });
-    // ضوضاء جمهور مصاحبة
-    for(let i=0;i<18;i++){
-      const t=now+i*0.1+Math.random()*0.05;
-      const buf=_ac.createBuffer(1,Math.floor(_ac.sampleRate*0.15),_ac.sampleRate);
-      const d=buf.getChannelData(0); for(let j=0;j<d.length;j++) d[j]=(Math.random()*2-1)*0.5;
-      const s=_ac.createBufferSource(), g=_ac.createGain(), f=_ac.createBiquadFilter();
-      f.type='lowpass'; f.frequency.value=500;
-      const vol=Math.max(0.05,0.22*(1-i/18));
-      g.gain.setValueAtTime(vol,t); g.gain.exponentialRampToValueAtTime(0.001,t+0.15);
-      s.buffer=buf; s.connect(f); f.connect(g); g.connect(_ac.destination); s.start(t);
-    }
+
+    // ضجيج جمهور مرشّح ومضغوط
+    const sr=_ac.sampleRate, bufLen=Math.floor(sr*2.0);
+    const nBuf=_ac.createBuffer(1,bufLen,sr);
+    const nd=nBuf.getChannelData(0);
+    for(let j=0;j<bufLen;j++) nd[j]=(Math.random()*2-1);
+    const ns=_ac.createBufferSource();
+    const nf=_ac.createBiquadFilter(); nf.type='bandpass'; nf.frequency.value=400; nf.Q.value=1.5;
+    const ng=_ac.createGain();
+    ng.gain.setValueAtTime(0,now);
+    ng.gain.linearRampToValueAtTime(0.18,now+0.1);
+    ng.gain.setValueAtTime(0.18,now+1.0);
+    ng.gain.exponentialRampToValueAtTime(0.001,now+1.9);
+    ns.buffer=nBuf; ns.connect(nf); nf.connect(ng); ng.connect(master); ns.start(now);
   },
 };
 // تفعيل السياق الصوتي عند أول تفاعل
