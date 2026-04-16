@@ -818,12 +818,20 @@ function persist(){
   }catch(e){}
 }
 const DEFAULT_PLAYERS=['عبدالرحمن محمد','انس ناصر','يوسف محمد قيران','يوسف محمد ط','ايوب محمد'];
+const DEFAULT_AVATARS={
+  'عبدالرحمن محمد': encodeURI('رفع اليدين عبدالرحمن محمد 1.png'),
+  'انس ناصر':       encodeURI('فرح انس 1.png'),
+  'يوسف محمد قيران':encodeURI('يوسف محمد قيران 1.png'),
+  'يوسف محمد ط':    encodeURI('يوسف محمد 1.png'),
+  'ايوب محمد':      encodeURI('ايوب 1.png'),
+};
 function loadData(){
   try{
     const p=localStorage.getItem('mj4-p'),a=localStorage.getItem('mj4-a'),s=localStorage.getItem('mj4-s');
     if(p)players=JSON.parse(p);
     else players=[...DEFAULT_PLAYERS];
     if(a)avatars=JSON.parse(a);
+    else avatars={...DEFAULT_AVATARS};
     if(s)scores=JSON.parse(s);
     players.forEach(n=>{if(scores[n]===undefined)scores[n]=0;});
   }catch(e){}
@@ -1281,7 +1289,7 @@ function hostSelectOpt(btn,chosen,correct){
 }
 
 const REACTION_PLAYERS=[
-  {keys:['عبدالرحمن محمد','عبدالرحمن'],   happy:'رفع اليدين عبدالرحمن محمد 1.png', angry:'غضب عبدالرحمن محمد2.png'},
+  {keys:['عبدالرحمن محمد','عبدالرحمن'],   happy:'رفع اليدين عبدالرحمن محمد 1.png', angry:'عبدالرحمن محمد2 غضب.png'},
   {keys:['انس ناصر','أنس ناصر','انس','أنس'],happy:'فرح انس 1.png',                  angry:null},
   {keys:['يوسف محمد قيران'],                happy:'يوسف محمد قيران 1.png',          angry:'يوسف محمد قيران 2.png'},
   {keys:['يوسف محمد طريد','يوسف محمد ط','يوسف محمدط','يوسف محمد ط '],happy:'يوسف محمد 1.png', angry:'يوسف محمد ط 2.png'},
