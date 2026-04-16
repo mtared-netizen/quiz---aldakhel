@@ -181,7 +181,8 @@ body::before{content:'';position:fixed;inset:0;opacity:.35;pointer-events:none;z
 .ds-sub{font-size:1rem;color:var(--text2);margin-bottom:2rem}
 .ds-status{font-size:.88rem;color:var(--text3);animation:pulse 2s ease-in-out infinite}
 /* Players main question display */
-.ds-game{flex:1;display:flex;flex-direction:column;max-width:1100px;margin:0 auto;width:100%;padding:1.5rem;padding-bottom:2rem}
+.ds-game{flex:1;display:flex;flex-direction:row;align-items:stretch;width:100%;gap:0;overflow:hidden}
+.ds-main-col{flex:1;display:flex;flex-direction:column;padding:1.5rem;min-width:0;overflow-y:auto}
 .ds-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:8px}
 /* Layout: player panel left + question right */
 .ds-body{display:flex;gap:1.5rem;align-items:flex-start;flex:1}
@@ -217,11 +218,13 @@ body::before{content:'';position:fixed;inset:0;opacity:.35;pointer-events:none;z
 .ds-optk{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;min-width:32px;border-radius:50%;background:rgba(255,255,255,.07);font-size:.9rem;font-weight:700;flex-shrink:0}
 .ds-opt.correct .ds-optk{background:var(--teal);color:#0a0a0f}
 .ds-opt.wrong .ds-optk{background:var(--red);color:#fff}
-/* Players scoreboard bottom strip */
-.ds-scores{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:auto;padding-top:1rem}
-.ds-score-pill{display:flex;align-items:center;gap:8px;background:var(--surface);border:.5px solid var(--border2);border-radius:40px;padding:6px 14px 6px 6px;transition:all .3s}
+/* Players scoreboard — vertical left sidebar */
+.ds-scores{display:flex;flex-direction:column;gap:8px;width:170px;min-width:170px;background:var(--surface);border-right:.5px solid var(--border2);padding:1.2rem .8rem;overflow-y:auto;flex-shrink:0;order:1}
+.ds-score-pill{display:flex;align-items:center;gap:8px;background:var(--surface2);border:.5px solid var(--border2);border-radius:14px;padding:8px 10px;transition:all .3s;width:100%}
 .ds-score-pill.top{border-color:rgba(232,184,75,.4);background:var(--gold-dim)}
-.ds-sav{width:30px;height:30px;border-radius:50%;object-fit:cover;flex-shrink:0}
+.ds-sname{font-size:.78rem;flex:1;line-height:1.3;word-break:break-word}
+.ds-spts{font-size:.95rem;font-weight:800;color:var(--gold);min-width:24px;text-align:center}
+.ds-sav{width:34px;height:34px;border-radius:50%;object-fit:cover;flex-shrink:0}
 .ds-sinit{width:30px;height:30px;border-radius:50%;background:var(--surface2);border:.5px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:.62rem;font-weight:700;color:var(--text2);flex-shrink:0}
 .ds-sname{font-size:.85rem;font-weight:500}
 .ds-spts{font-size:.85rem;font-weight:700;color:var(--gold);margin-right:4px}
@@ -541,40 +544,44 @@ body::before{content:'';position:fixed;inset:0;opacity:.35;pointer-events:none;z
   <!-- Game state (hidden until game starts) -->
   <div id="dsGame" style="display:none;flex:1;flex-direction:column">
     <div class="ds-game">
-      <div class="ds-top">
-        <div id="dsCatpill" class="ds-catpill"></div>
-        <div class="ds-tring">
-          <svg width="52" height="52" viewBox="0 0 52 52">
-            <circle cx="26" cy="26" r="21" fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="3.5"/>
-            <circle id="dsTarc" cx="26" cy="26" r="21" fill="none" stroke="#e8b84b" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="132" stroke-dashoffset="0"/>
-          </svg>
-          <div class="ds-tnum" id="dsTnum">30</div>
-        </div>
-      </div>
-      <div class="ds-body">
-        <!-- بانل المتسابق الكبير على اليسار -->
-        <div class="ds-player-panel" id="dsPlayerPanel">
-          <div class="ds-player-big-lbl">سؤال لـ</div>
-          <div id="dsPlayerBigAv"></div>
-          <div class="ds-player-big-name" id="dsPlayerBigName"></div>
-        </div>
-        <!-- عمود السؤال والخيارات -->
-        <div class="ds-question-col">
-          <div class="ds-qcard">
-            <div class="ds-qnum" id="dsQnum"></div>
-            <div id="dsFlagEl" class="ds-flag" style="display:none"></div>
-            <div class="ds-qtxt" id="dsQtxt"></div>
-          </div>
-          <div id="dsMcqGrid" class="ds-mcqgrid"></div>
-          <!-- After reveal: answer shown -->
-          <div id="dsAnswered" class="ds-answered" style="display:none">
-            <div class="ds-ans-icon">✅</div>
-            <div class="ds-ans-lbl">الإجابة الصحيحة</div>
-            <div class="ds-ans-val" id="dsAnsVal"></div>
-          </div>
-        </div>
-      </div>
+      <!-- شريط المتسابقين الرأسي على اليسار -->
       <div class="ds-scores" id="dsScores"></div>
+      <!-- المحتوى الرئيسي -->
+      <div class="ds-main-col">
+        <div class="ds-top">
+          <div id="dsCatpill" class="ds-catpill"></div>
+          <div class="ds-tring">
+            <svg width="52" height="52" viewBox="0 0 52 52">
+              <circle cx="26" cy="26" r="21" fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="3.5"/>
+              <circle id="dsTarc" cx="26" cy="26" r="21" fill="none" stroke="#e8b84b" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="132" stroke-dashoffset="0"/>
+            </svg>
+            <div class="ds-tnum" id="dsTnum">30</div>
+          </div>
+        </div>
+        <div class="ds-body">
+          <!-- بانل المتسابق الكبير -->
+          <div class="ds-player-panel" id="dsPlayerPanel">
+            <div class="ds-player-big-lbl">سؤال لـ</div>
+            <div id="dsPlayerBigAv"></div>
+            <div class="ds-player-big-name" id="dsPlayerBigName"></div>
+          </div>
+          <!-- عمود السؤال والخيارات -->
+          <div class="ds-question-col">
+            <div class="ds-qcard">
+              <div class="ds-qnum" id="dsQnum"></div>
+              <div id="dsFlagEl" class="ds-flag" style="display:none"></div>
+              <div class="ds-qtxt" id="dsQtxt"></div>
+            </div>
+            <div id="dsMcqGrid" class="ds-mcqgrid"></div>
+            <!-- After reveal: answer shown -->
+            <div id="dsAnswered" class="ds-answered" style="display:none">
+              <div class="ds-ans-icon">✅</div>
+              <div class="ds-ans-lbl">الإجابة الصحيحة</div>
+              <div class="ds-ans-val" id="dsAnsVal"></div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -1555,11 +1562,13 @@ function renderDsScores(scoresObj, avData){
   if(avData) Object.assign(avatars, avData);
   const sorted=Object.entries(scoresObj).sort((a,b)=>a[1]-b[1]);
   const last=sorted[sorted.length-1];
-  document.getElementById('dsScores').innerHTML=sorted.map(([name,pts],i)=>`
+  document.getElementById('dsScores').innerHTML=`<div style="font-size:.65rem;color:var(--gold);font-weight:700;letter-spacing:.08em;margin-bottom:8px;text-align:center">المتسابقون</div>`+sorted.map(([name,pts],i)=>`
     <div class="ds-score-pill ${last&&name===last[0]?'top':''}">
-      ${avHTML(name,30,'ds-sav')}
-      <span class="ds-sname">${name}</span>
-      <span class="ds-spts">${pts}</span>
+      ${avHTML(name,34,'ds-sav')}
+      <div style="flex:1;min-width:0">
+        <div class="ds-sname">${name}</div>
+        <div class="ds-spts">${pts} نقطة</div>
+      </div>
     </div>`).join('');
 }
 function startDsTimer(secs, max){
