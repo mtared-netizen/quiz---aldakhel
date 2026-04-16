@@ -1778,6 +1778,14 @@ function renderHistory(){
 
 /* ===================== BOOT ===================== */
 document.addEventListener('DOMContentLoaded',()=>{
+  // إذا لم يوجد مشاركون محفوظون، احذف البيانات القديمة واحفظ الافتراضيين
+  try{
+    const p=JSON.parse(localStorage.getItem('mj4-p')||'[]');
+    if(!p.length){
+      localStorage.setItem('mj4-p',JSON.stringify(DEFAULT_PLAYERS));
+      localStorage.setItem('mj4-a',JSON.stringify(DEFAULT_AVATARS));
+    }
+  }catch(e){}
   initBC();
   updateModePickerCount();
   document.getElementById('mModal').addEventListener('click',e=>{if(e.target.id==='mModal')closeModal();});
